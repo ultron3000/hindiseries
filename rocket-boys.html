@@ -137,7 +137,7 @@
         `;
         card.querySelector('button').onclick = () => {
           if (isStreamLink(ep.url)) {
-            window.location.href = `player.html?video=${encodeURIComponent(ep.url)}`;
+            window.location.href = `player.html?video=${encodeURIComponent(ep.video || ep.url)}&back=rocket-boys.html`${encodeURIComponent(ep.video)}`;
           } else {
             const video = document.getElementById('modal-video');
             video.src = ep.url;
