@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inspector Avinash</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #0f172a, #1e293b);
+      color: white;
+    }
+    .video-header {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 42.5%; /* 16:9 aspect ratio */
+      overflow: hidden;
+    }
+    .video-header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .video-header {
+        padding-bottom: 56.25%; /* 16:9 aspect ratio for mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="video-header">
+    <video autoplay muted loop playsinline>
+      <source src="https://imdb-video.media-imdb.com/vi1280689177/1434659607842-pgv4ql-1684397866057.mp4?Expires=1748981176&Signature=B5DlBQmSDjJ7qEDisIWuv04oCkx0y93MI9TZKJev7L2yidKhcU7KgCRMbSM-ErHBn~1-PaapwgywgZz9wAodn5bi7zz0LCDO87dhF8cO~KB8bVZ3bJP15A7ERN-Tjq0gInI97VAqvDBsWNduUm9wFdWWEOk5O~eqf8Uu8XRZpfV~PSt93wn7F0je1sckuXUQa1JPocQkOynARXQpEiCKMRYigSu5gz1CUnV2bLvyVgEix4g3oNH88vrm~KJlReNrD5ADhVPuVvbOon8txMyEkXxx5VgyGyqLe0Cn~t0HoDFi2iWmycP8snEPBueeaBR6z1ge-rSmM8iYASEAWE4Pog__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
+      <!-- Fallback image if video doesn't load -->
+      <img src="https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/1817/1706697671817-i" alt="Special OPS Banner" style="width: 100%; height: auto;">
+    </video>
+    <div class="video-overlay">
+      
+Set in 1998 UP, this is the story of a dynamic cop leading a Special Task Force which becomes instrumental in eliminating a dreaded weapons cartel.
+      <div class="flex gap-4">
+        
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </main>
+
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div class="bg-gray-800 p-4 rounded-lg w-full max-w-4xl relative">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-xl bg-gray-700 hover:bg-gray-600 rounded-full w-8 h-8 flex items-center justify-center">&times;</button>
+      <video id="modal-video" class="w-full rounded" controls></video>
+    </div>
+  </div>
+
+  <script>
+    const episodes = {
+      season1: [
+        { title: "Shankhnaad", video: "https://macdn.hakunaymatata.com/resource/fd93dc01f5c6efe5f481e459b6d09693.mp4?Expires=1750051354&Signature=bw6Bw6ijSiEho-1L1jYHkN62LF1241Yy7YSEr6bWpxXHXUIryJDi68SSnNuHQqBGVPtrz~1b9W7jDReL7Y0-hsAzMjVqS9HcBsp7zDiE5RPpKSSBXU2BCfKTm-SF5Uc6OmFQBUHjihj~aH-ZkDsrC7avbAi-Q-qi3TKjeqavWfDAC2e6zcaqD2KMX-~lexC4P-irM1MiEqOdCJWOvekLJfGO8E6f6pS4CU6sVpdIVfsfoV00sSphnYQ7j7QeB-lBry15yF9Nq2u9fJDd2udvj0x6WmApUrXUC~l1EDw8Ztq-HndALIdwaeXqlmFAyW1NM3Oj7ZgqPuK5r5bTTxVVqg__&Key-Pair-Id=KMHN1LQ1HEUPL", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9562/1734124049562-h" },
+        { title: "Mayajaal", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2p1RJFTT6FEeORVRzkleZFTTtlFMORUT6pFVJl3TEl1dZdVWwoFRZRTTXlUP:1748899296:89.116.30.152:d8f559a1764ed5fc75aede81fe595e653520a2b23b85e61231a5e94a258f1bbc/./1080/index.m3u8", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/544/1734124050544-h" },
+        { title: "Chakravyuh", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29ERnFTTHpFbOpXQwk1VRlXTEJUaNR0Z5llaBdXWtFFMOpmVp1kaVFjWqFVP:1748899321:89.116.30.152:eb6a40e8135fac30b14ad0e12c1fab8e6936edcc8ee7a6425a61399c6cc23366/./1080/index.m3u8", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3597/1734124003597-h" },
+        { title: "Ranneeti", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21keWpWW6ZUbPRkVt1kMJlnTqllMZRVR140VRlXWqJ1aaRFZsl1VJJzTUFVP:1748899351:89.116.30.152:290dba339b8ad728ece5e36d78562dd21a764b67873d0013c63a486366fc623f/./1080/index.m3u8", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7275/1734124107275-h" },
+        { title: "Bisaat", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21EVGtWWt1EMPRUTzoFRFdXWUp0aNpnSr10VZVTTUZ0aapGbtlleapWWqdWP:1748899376:89.116.30.152:8c969e6a8dec6f02e60c796e415cf1a21b09b15cf330322dafe20bd031448247/./1080/index.m3u8", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7006/1734124097006-h" },
+        { title: "Taandav", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21kejpnTElUMadUS61EVndXTXpVbNpnQq10RNdXWUlkMaRkSqpVbW1WWqtWP:1748899403:89.116.30.152:88f636a960f1371dbc33586a8ab5803af339360461b90b832d5685b27d9df9cc/./1080/index.m3u8", 
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3030/1734124083030-h" },
+        { title: "Yudharambh", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT290RVdXTykENPdUS51ERZhXTUhGbOp3a04UbVRjWqdGNNRkUql1VRpnWUNWP:1748899427:89.116.30.152:c1328388aa4deeb5ee0744f8e8cf6e2788041d5e9e73c01e6af02ecc24a2e75b/./1080/index.m3u8",
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/4814/1734124234814-h" },
+        { title: "Kurukshetra", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2llaBlnTE10dPdVSyolaZRjTq1keapGZppFRSxmWEVlMORUWz8EVGlWWXlVP:1748899449:89.116.30.152:a9574046c01269e06aa50a77c5d54ea781aa740f2e30e600930eccd06282e583/./1080/index.m3u8",
+        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/43/1734124230043-h" }
+      ],
+
+    };
+
+    // Initialize video header
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.querySelector('.video-header video');
+      video.play().catch(e => {
+        console.log("Autoplay prevented, showing fallback image");
+        const fallbackImg = document.createElement('img');
+        fallbackImg.src = "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/4137/654137-h";
+        fallbackImg.alt = "Special OPS Banner";
+        fallbackImg.className = "w-full h-full object-cover";
+        document.querySelector('.video-header').appendChild(fallbackImg);
+      });
+    });
+
+    function isStreamLink(url) {
+      return url.endsWith('.m3u8') || url.endsWith('.txt');
+    }
+
+    function loadSeason(season) {
+      const grid = document.getElementById('episode-grid');
+      grid.innerHTML = '';
+      episodes[season].forEach((ep) => {
+        const card = document.createElement('div');
+        card.className = 'bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1';
+        card.innerHTML = `
+          <div class="relative">
+            <img src="${ep.image}" alt="${ep.title}" class="w-full h-48 object-cover">
+            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="p-4">
+            <h2 class="text-lg font-semibold mb-2">${ep.title}</h2>
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-300">Watch</button>
+          </div>
+        `;
+        card.querySelector('button').onclick = () => {
+          if (isStreamLink(ep.video)) {
+            window.location.href = `player.html?video=${encodeURIComponent(ep.video)}`;
+          } else {
+            const video = document.getElementById('modal-video');
+            video.src = ep.video;
+            video.poster = ep.image;
+            document.getElementById('modal').classList.remove('hidden');
+            video.play();
+          }
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function closeModal() {
+      const video = document.getElementById('modal-video');
+      video.pause();
+      video.src = '';
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    loadSeason('season1');
+  </script>
+</body>
+</html>
