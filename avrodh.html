@@ -1,631 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avrodh: The Siege Within - Series Viewer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .episode-card:hover .play-icon {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .season-tab.active {
-            border-bottom: 3px solid #e50914;
-            color: #e50914;
-            font-weight: bold;
-        }
-        .blur-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avrodh: The Siege Within</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #0f172a, #1e293b);
+      color: white;
+    }
+    .episode-card:hover .play-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    .modal-enter {
+      animation: modalEnter 0.3s ease-out forwards;
+    }
+    @keyframes modalEnter {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .video-header {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 40%; /* 16:9 aspect ratio */
+      overflow: hidden;
+    }
+    .video-header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+    }
+    @media (max-width: 768px) {
+      .video-header {
+        padding-bottom: 60%; /* Taller aspect ratio for mobile */
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white">
-    <!-- Header -->
-    <header class="bg-black py-4 px-6 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <h1 class="text-2xl font-bold text-red-600">AVRODH</h1>
-                <span class="ml-2 text-gray-300">The Siege Within</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-medium">
-                    <i class="fas fa-play mr-2"></i>Watch Now
-                </button>
-                <button class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-md">
-                    <i class="fas fa-user"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="relative h-96 bg-gradient-to-r from-black via-gray-900 to-black">
-        <div class="absolute inset-0 bg-[url('https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg')] bg-cover bg-center opacity-30"></div>
-        <div class="container mx-auto h-full flex items-center relative z-10 px-6">
-            <div class="max-w-2xl">
-                <h1 class="text-5xl font-bold mb-4">Avrodh: The Siege Within</h1>
-                <p class="text-lg text-gray-300 mb-6">Based on real events, this series chronicles India's surgical strikes against terrorist launch pads in Pakistan-occupied Kashmir in 2016.</p>
-                <div class="flex space-x-4">
-                    <button class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-md font-medium flex items-center">
-                        <i class="fas fa-play mr-2"></i> Play Season 1
-                    </button>
-                    <button class="bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-md font-medium flex items-center">
-                        <i class="fas fa-info-circle mr-2"></i> More Info
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container mx-auto py-8 px-6">
-        <!-- Season Tabs -->
-        <div class="flex border-b border-gray-700 mb-8">
-            <button class="season-tab active px-6 py-3" data-season="1">Season 1</button>
-            <button class="season-tab px-6 py-3" data-season="2">Season 2</button>
-        </div>
-
-        <!-- Season 1 Episodes -->
-        <div id="season-1" class="season-content">
-            <h2 class="text-2xl font-bold mb-6">Season 1 Episodes</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Episode 1 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://images.slivcdn.com/landscape_thumb/avrodh_free_14may_episode.jpg?h=398&w=708&q=high" alt="Episode 1" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            48 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">1. The Uri Attack</h3>
-                        <p class="text-gray-400 text-sm mb-3">Terrorists attack an Indian Army base in Uri, killing 19 soldiers. The nation demands retaliation.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 1</span>
-                            <a href="https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERGhWWXlUeOREZo5kanVTTq10dOpXV00kMJBjWqV0dOJjSt5ERrlXTEVUP:1748888789:89.116.30.152:35446110a119ef58ab55e286cabd72ff9ae0b8a6b6ac039999fe4dc472304c6d/./1080/index.m3u8" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 2 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://images.slivcdn.com/landscape_thumb/AVRODH_EP2.jpg?h=398&w=708&q=high" alt="Episode 2" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            47 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">2. Planning the Strike</h3>
-                        <p class="text-gray-400 text-sm mb-3">The Indian government and military strategize a surgical strike in PoK to destroy terrorist launch pads.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 2</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-02-planning-the-strike-1000179294" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 3 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 3" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            46 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">3. The Covert Team</h3>
-                        <p class="text-gray-400 text-sm mb-3">A special forces team is assembled for the mission, facing challenges in training and preparation.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 3</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-03-the-covert-team-1000179295" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 4 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 4" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            49 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">4. Crossing the LoC</h3>
-                        <p class="text-gray-400 text-sm mb-3">The special forces team crosses the Line of Control under the cover of darkness to reach their targets.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 4</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-04-crossing-the-loc-1000179296" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 5 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 5" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            48 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">5. The Surgical Strike</h3>
-                        <p class="text-gray-400 text-sm mb-3">The Indian forces execute precise attacks on terrorist launch pads across the LoC in PoK.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 5</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-05-the-surgical-strike-1000179297" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 6 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 6" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            50 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">6. Mission Accomplished</h3>
-                        <p class="text-gray-400 text-sm mb-3">The team successfully completes the mission and returns safely, while Pakistan denies the attacks.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 6</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-06-mission-accomplished-1000179298" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 7 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 7" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            49 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">7. The Aftermath</h3>
-                        <p class="text-gray-400 text-sm mb-3">The political and military fallout of the surgical strikes, both in India and internationally.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 7</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-07-the-aftermath-1000179299" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 8 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 8" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            48 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">8. The Heroes Return</h3>
-                        <p class="text-gray-400 text-sm mb-3">The nation celebrates the success of the mission while the soldiers return to their families.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 8</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-08-the-heroes-return-1000179300" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 9 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BNjQ1Y2Q3YzQtZTY4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Episode 9" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            50 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">9. The Legacy</h3>
-                        <p class="text-gray-400 text-sm mb-3">The long-term impact of the surgical strikes on India's defense policy and Pakistan's response.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 9</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-the-siege-within-1700000554/episode-09-the-legacy-1000179301" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Season 2 Episodes -->
-        <div id="season-2" class="season-content hidden">
-            <h2 class="text-2xl font-bold mb-6">Season 2 Episodes</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Episode 1 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 1" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            49 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">1. The New Threat</h3>
-                        <p class="text-gray-400 text-sm mb-3">A new terrorist organization emerges with plans to attack India, forcing the military to prepare for another operation.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 1</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-01-the-new-threat-1000189301" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 2 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 2" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            48 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">2. Intelligence Gathering</h3>
-                        <p class="text-gray-400 text-sm mb-3">Indian intelligence agencies work tirelessly to gather information about the new terrorist threat.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 2</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-02-intelligence-gathering-1000189302" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 3 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 3" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            47 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">3. The Balakot Plan</h3>
-                        <p class="text-gray-400 text-sm mb-3">After the Pulwama attack, the Indian government considers an airstrike on terrorist camps in Balakot, Pakistan.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 3</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-03-the-balakot-plan-1000189303" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 4 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 4" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            50 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">4. Air Strike Preparation</h3>
-                        <p class="text-gray-400 text-sm mb-3">The Indian Air Force prepares for the daring mission to strike deep inside Pakistani territory.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 4</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-04-air-strike-preparation-1000189304" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 5 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 5" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            48 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">5. Operation Bandar</h3>
-                        <p class="text-gray-400 text-sm mb-3">The Indian Air Force executes Operation Bandar, striking the Jaish-e-Mohammed training camp in Balakot.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 5</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-05-operation-bandar-1000189305" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 6 -->
-                <div class="episode-card bg-gray-8 00 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 6" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            49 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">6. Pakistan's Response</h3>
-                        <p class="text-gray-400 text-sm mb-3">Pakistan attempts to retaliate the next day, leading to aerial combat between Indian and Pakistani jets.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 6</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-06-pakistans-response-1000189306" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 7 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 7" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            51 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">7. Wing Commander Abhinandan</h3>
-                        <p class="text-gray-400 text-sm mb-3">Wing Commander Abhinandan Varthaman is captured after his MiG-21 is shot down in Pakistani territory.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 7</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-07-wing-commander-abhinandan-1000189307" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 8 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 8" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            50 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">8. Diplomatic Pressure</h3>
-                        <p class="text-gray-400 text-sm mb-3">India mounts diplomatic pressure on Pakistan for Abhinandan's release while preparing for any eventuality.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 8</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-08-diplomatic-pressure-1000189308" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Episode 9 -->
-                <div class="episode-card bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                    <div class="relative">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZDI0Y2M5YjAtYzQ4Yi00YzY1LTk0YjMtYjQ0YzU0YzU1YzQ1XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" alt="Season 2 Episode 9" class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="play-icon opacity-0 transition-all duration-300 bg-red-600 rounded-full w-12 h-12 flex items-center justify-center">
-                                <i class="fas fa-play"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                            52 min
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">9. The Hero Returns</h3>
-                        <p class="text-gray-400 text-sm mb-3">Wing Commander Abhinandan is released by Pakistan and returns to India as a national hero.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500 text-sm">Episode 9</span>
-                            <a href="https://www.sonyliv.com/shows/avrodh-season-2-1700000555/episode-09-the-hero-returns-1000189309" class="text-red-500 hover:text-red-400 text-sm font-medium">Watch Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-black py-8 px-6">
-        <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between">
-                <div class="mb-6 md:mb-0">
-                    <h2 class="text-2xl font-bold text-red-600 mb-4">AVRODH</h2>
-                    <p class="text-gray-400 max-w-md">Based on real events, Avrodh chronicles India's military operations against terrorism, showcasing the bravery of our armed forces.</p>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">Seasons</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Season 1</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Season 2</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">About</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Cast</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Crew</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Real Events</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-4">Legal</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Terms</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Privacy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Cookies</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 mb-4 md:mb-0">© 2023 Avrodh Series. All rights reserved.</p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Video Modal -->
-    <div id="video-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-90">
-        <div class="relative w-full max-w-4xl mx-4">
-            <button id="close-modal" class="absolute -top-10 right-0 text-white text-3xl focus:outline-none">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="video-container">
-                <iframe id="video-iframe" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
+<body>
+  <header class="video-header">
+    <video autoplay muted loop playsinline>
+      <source src="https://imdb-video.media-imdb.com/vi2500509209/1434659607842-pgv4ql-1594623666544.mp4?Expires=1748974926&Signature=CldPJYX5~eNK7XKt4BCPfKAyAYX1zoe3HPh7cFCRuDQJ9tkto~LZx8gYCFxPBzRy0ri~cJqE84dYSghOJiFQ9w-JYhO5bxcXmRh9Au3Ij3se8DTl3sNg8Z~j-IIxej951aXqgwb0hJ88s4s4EDiWFWtExBWyibR4TD0srHlWnYKagMFqkloObLbWfbuj1FVO9KZMlv4vDd2ZdbmyqoAZEIgSiKsJO5RDy6b7SjxQGV3VmgAaWH7TNaSYCAa~Q9kxgy~eN3tPJEaywqE1ux8PTTQDkfsfQ1GEMTe-ZZJYyMSCxi8H3ChvYIBRbTJ3F91ctFSs2C61MDQtMLJgqrCAtg__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+    <div class="video-overlay">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">Rocket Boys</h1>
+      <p class="text-xl md:text-2xl max-w-2xl">Series about India's space pioneers</p>
+      <div class="mt-6 flex space-x-4">
+      </div>
     </div>
+  </header>
 
-    <script>
-        // Season tabs functionality
-        const seasonTabs = document.querySelectorAll('.season-tab');
-        const seasonContents = document.querySelectorAll('.season-content');
-        
-        seasonTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                seasonTabs.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked tab
-                tab.classList.add('active');
-                
-                // Hide all season contents
-                seasonContents.forEach(content => content.classList.add('hidden'));
-                // Show selected season content
-                const seasonId = tab.getAttribute('data-season');
-                document.getElementById(`season-${seasonId}`).classList.remove('hidden');
-            });
-        });
+  <main class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+      <button onclick="loadSeason(1)" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white mr-2">Season 1</button>
+      <button onclick="loadSeason(2)" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white">Season 2</button>
+    </div>
+    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
 
-        // Video modal functionality
-        const episodeCards = document.querySelectorAll('.episode-card');
-        const videoModal = document.getElementById('video-modal');
-        const closeModal = document.getElementById('close-modal');
-        const videoIframe = document.getElementById('video-iframe');
-        
-        episodeCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Don't open modal if clicking on watch now link
-                if (e.target.tagName === 'A') return;
-                
-                const watchLink = card.querySelector('a').href;
-                videoIframe.src = watchLink;
-                videoModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            });
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div class="bg-gray-800 p-4 rounded-lg w-full max-w-4xl relative modal-enter">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-xl">&times;</button>
+      <video id="modal-video" class="w-full rounded" controls poster="https://i.imgur.com/I9b8D7p.jpg"></video>
+    </div>
+  </div>
+
+  <script>
+    const episodes = {
+      1: [
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERGhWWXlUeOREZo5kanVTTq10dOpXV00kMJBjWqV0dOJjSt5ERrlXTEVUP:1748891459:89.116.30.152:35446110a119ef58ab55e286cabd72ff9ae0b8a6b6ac039999fe4dc472304c6d/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/avrodh_free_14may_episode.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERGxmTEplaPRkUr5ERZFTTt5UbO1WT4planl3TXFVNOpXT1oFRJFTWtlUP:1748891653:89.116.30.152:c7a2f44eaff12064d24ce9dd401233665503a5a57c6db8bdb9ea7bb17238e233/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP2.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21EVWpmTqRmaNJTV61keOlmWUF0dZp2a41keVJjWtpEbZpnWq9ERFBzTUtWP:1748891689:89.116.30.152:078cbb4669b9a657811ead83b00124dacf7567a120b1eb52b215423d30dce64b/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP3.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2lleGpWWtZEbOR0Yy0kaolWTyoVbNdVU080RJFTT6JVbNJTU0o1RVhnWqVVP:1748891747:89.116.30.152:a3d702da97db8a0688c9d5d2afb7365be1062e1aee99f4e574b7059ff9f2ac6a/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP4.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25ERCpmTXFFeOpXS51EVkx2TUt2MZpnVq10RNpnWEZ1aNpWR35EVGxWT6NWP:1748891795:89.116.30.152:04f68806efae93f926d58003d733f13587da5f76dda2f7bed608fc56d68d2b3f/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP5.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2p1VZNTTUdGMPdkUolVbZpXTUxGbPRVV3plaRJTTyU0MZJTW49ERstmWUFVP:1748891939:89.116.30.152:c6152925076d96cb4b9de025f9f3c67c2c7e8eba7213fb8fb7fe15a68dfb0829/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP6.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2llaFl3TXl1MadkUo90VOpmTXlUNORkUrlFVklWWtpEbZpHas5kMFVTTXlVP:1748891965:89.116.30.152:1cb265f12e4d7323e3ac9bab4928b98f24ac5629676b4473993c9d9ecdc8029f/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP7.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaZJjTXlUNZpXT610VJBTWy0kMORlSr50VJp3TUZFaOJTTz0ERSpWTHVVP:1748892004:89.116.30.152:215f253ed571ec7d503fa86810696c48333312f3432de790f5dd7b784edc6691/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP8.jpg?h=398&w=708&q=high" }
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25EVSx2TUpVaaREbq1kaKlmTUhmaapWRx40VFhXWtVVMN1mRp90RGtmWqlVP:1748892030:89.116.30.152:10671a2f173e7300c926aedf7f74b6d90f26f9445aa03abe257b6cd0a747de59/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP9.jpg?h=398&w=708&q=high" }
+      ],
+      2: [
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29EVjNTTqFVeOR1a45EVjBjWtFFMZp3Zw4keFFjWHlUePdVWx0kaVpnTElUP:1748892199:89.116.30.152:31f6ad61ba95f405234ed5a7a870d5faa09cda75edb6e17448afaa6829cc92cb/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AvrodhS2_4_first_episode1_1.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25EVG1WWykUMNpXQz4UbNNTTHVUNNdVS1oFVWtmTqNmeZ1WTw40VWxmWEVVP:1748892225:89.116.30.152:39741ae3b37fe14069fc02c329eff766bcbe13f747458f70b320d49a694ba69b/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_02_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaklmWH1UNORUWy4kaFNTT6pUbNp2ay0UbOtWWykEeapmRq5kaNpnTElUP:1748892252:89.116.30.152:55a41a071702740aeecac6a15f35a3d4167f305e069bb0bde921c128e3f8372d/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_03_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25UbFdXTqV0MO1WTzo1VWpWWUVlMZdVU00UbRpXW6h2aNREbop1RKt2TXlUP:1748892276:89.116.30.152:2b3efa7485730ddd2be86ca5cf0fcfb73ee83b6741a378105aa0197a76533da0/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_04_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaNNzTE1keaRlTp1UbVNTTXZ0aORFZs1keFBjTqxGaOJjWtpFVNVzTEdWP:1748892312:89.116.30.152:70bf16c41b6c285a7fcc60f64c1d5db52495d3712f0b8fcf657e93d0aceb4623/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_05_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29ERCt2TU1EeapGZqplaNVTTE1UNNpXU0kVbFJTTEVkePdVW35UbVFjT6tWP:1748892355:89.116.30.152:67acb718079bf9df306195c0bc24c1261d47ee551c53fcb7eb6590fe4b81c12e/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_06_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2pFVahWTUVFeadlRt9ERrBjTqJ0aZpXT1kFVZl3TUtmMORlTq90RZNjWE1UP:1748892382:89.116.30.152:a88ef1a17f299ac6fa1641d5b7d3e491bc1cdfe72aee5ee3fbcfedbedd2640bf/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_07_landscape_thumb.jpg?h=398&w=708&q=high" },
+        { url: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2pFVJdnTql0dOpWQ0o1RVJjTUlFNNpWW0oFRjlXWUFEeNp3Z45kanNjWtVVP:1748892405:89.116.30.152:9acc4647fcb16966908a0894994bd533ba751daaebbe3e347d36fe08097e12e3/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_08_landscape_thumb.jpg?h=398&w=708&q=high" }
+        { url: "https://sxic.swobodafocht.sbs:443/v4/9a/5gupa/index-f1-v1-a1.txt", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_09_landscape_thumb.jpg?h=398&w=708&q=high" }
+      ]
+    };
+
+    function isStreamLink(url) {
+      return url.endsWith('.m3u8') || url.endsWith('.txt');
+    }
+
+    function loadSeason(season) {
+      const grid = document.getElementById('episode-grid');
+      grid.innerHTML = '';
+      episodes[season].forEach((ep, i) => {
+        const card = document.createElement('div');
+        card.className = 'episode-card bg-gray-700 p-4 rounded shadow hover:shadow-lg transition duration-300 hover:transform hover:scale-105';
+        card.innerHTML = `
+          <img src="${ep.poster}" class="rounded mb-2 w-full h-48 object-cover" alt="Episode ${i + 1}">
+          <h2 class="text-xl font-semibold mb-2">Episode ${i + 1}</h2>
+          <button class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded w-full flex items-center justify-center">
+            <i class="fas fa-play mr-2"></i> Play
+          </button>
+        `;
+        card.querySelector('button').onclick = () => {
+          if (isStreamLink(ep.url)) {
+            window.location.href = `player.html?video=${encodeURIComponent(ep.url)}`;
+          } else {
+            const video = document.getElementById('modal-video');
+            video.src = ep.url;
+            video.poster = ep.poster;
+            document.getElementById('modal').classList.remove('hidden');
+          }
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function closeModal() {
+      const video = document.getElementById('modal-video');
+      video.pause();
+      video.src = '';
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    // Auto-play the header video on mobile devices
+    document.addEventListener('DOMContentLoaded', function() {
+      const headerVideo = document.querySelector('.video-header video');
+      if (headerVideo) {
+        headerVideo.play().catch(e => {
+          console.log("Autoplay prevented, showing fallback");
         });
-        
-        closeModal.addEventListener('click', () => {
-            videoModal.classList.add('hidden');
-            videoIframe.src = '';
-            document.body.style.overflow = 'auto';
-        });
-        
-        // Close modal when clicking outside
-        videoModal.addEventListener('click', (e) => {
-            if (e.target === videoModal) {
-                videoModal.classList.add('hidden');
-                videoIframe.src = '';
-                document.body.style.overflow = 'auto';
-            }
-        });
-    </script>
+      }
+      loadSeason(1);
+    });
+  </script>
 </body>
 </html>
