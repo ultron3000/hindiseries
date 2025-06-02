@@ -7,10 +7,26 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --dark: #0f172a;
+      --darker: #020617;
+    }
+    
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #0f172a, #1e293b);
+      background: linear-gradient(135deg, var(--darker), var(--dark));
       color: white;
+      min-height: 100vh;
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     .video-header {
       position: relative;
@@ -49,28 +65,57 @@
   </style>
 </head>
 <body>
-  <header class="video-header">
-    <video autoplay muted loop playsinline>
-      <source src="https://imdb-video.media-imdb.com/vi3392324121/1434659607842-pgv4ql-1657078480047.mp4?Expires=1748980162&Signature=Na8eaZ7-GVm5OS~Ul3LSGemCePrv-noQUXVFgqr7xqrktFsouLg~5DFUbcXesRSd7SCOJyNNF-S0vYgqxaTdJjlTYAmWBoGFE~CCybGGttAJ9EmHTFUlIKjbg0rGK-DJ6pdbwGrP2x8CtHWkdz6TbbwkjfzalqRTq6X8WSQc1iWEnaPge15sxmZAdb2rdlRsQUWn1CUe40U33uYD01VuDi7kB0PjQCbIAORnzhzK0S8PweIXa6dm1tqe~bf4Ab6E1W5SJsOOPSTJuc-NaZPhuQYFz-DzBSMCly3zJFjUFXPpFOd3L~l70n4KgI0dwX1dHpWH3v4VjuBVvvo3tf3KKg__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
-      <!-- Fallback image if video doesn't load -->
-      <img src="https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/1817/1706697671817-i" alt="Special OPS Banner" style="width: 100%; height: auto;">
+  <nav class="fixed w-full z-50 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+        Shoorveer
+      </div>
+      <div class="flex space-x-6">
+        <a href="#" class="hover:text-blue-400 transition-colors">Home</a>
+        <a href="#" class="hover:text-blue-400 transition-colors">Seasons</a>
+        <a href="#" class="hover:text-blue-400 transition-colors">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="video-header relative">
+    <video autoplay muted loop playsinline class="w-full h-screen object-cover">
+      <source src="https://imdb-video.media-imdb.com/vi3392324121/1434659607842-pgv4ql-1657078480047.mp4?Expires=1748984407&Signature=HwzP8JDA9nIHQ7plF~wes4MkiklwZNV39xvfcGwKtdh74t67jH1cDGak-xJGORzzdJLdyyvbpei0qUoJIXNEdM09JIitLCdc9K-f4F5FHiSxsv9wAuzq508oy51Q~NR0pG8TGzUN68S7aXdrIEDBvYQXJeETfQyAmr9yf2~S7vIlLHIZDvI4TYt2LXiXSbnhKmEFPZ1YLpGzqi-h~Qzy1gYUE8wdRoY0gowJMXqjnT338qg1pZx~Afj3JaGtjiCVRvPKl9TbfvgZOikvC3MfQSmBbSNcZ2x-2WtswotRn0fusqUEG0RRB3qiuBvAATCFyTu-XJ3vyGtkjrMqvtQ6dA__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
+      <img src="https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/1817/1706697671817-i" alt="Special OPS Banner" class="w-full h-screen object-cover">
     </video>
-    <div class="video-overlay">
-      When an imminent attack threatens India, an elite unit undertakes a mission that will test the limits of their courage and grit.
-      <div class="flex gap-4">
-        
+    <div class="video-overlay absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+      </h1>
+      <p class="text-xl md:text-2xl max-w-3xl leading-relaxed opacity-0 animate-fadeInUp animation-delay-300">
+        When an imminent attack threatens India, an elite unit undertakes a mission that will test the limits of their courage and grit.
+      </p>
+      <div class="mt-8 opacity-0 animate-fadeInUp animation-delay-500">
+        <button class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+          Watch Trailer
+        </button>
       </div>
     </div>
   </header>
 
-  <main class="container mx-auto px-4 py-8">
-    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  <main class="container mx-auto px-4 py-24">
+    <h2 class="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+      Season 1 Episodes
+    </h2>
+    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
   </main>
 
-  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-    <div class="bg-gray-800 p-4 rounded-lg w-full max-w-4xl relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-xl bg-gray-700 hover:bg-gray-600 rounded-full w-8 h-8 flex items-center justify-center">&times;</button>
-      <video id="modal-video" class="w-full rounded" controls></video>
+  <div id="modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-1 rounded-xl w-full max-w-5xl relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 animate-pulse"></div>
+      <div class="relative bg-gray-900 rounded-lg overflow-hidden">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-white text-2xl bg-gray-800/80 hover:bg-gray-700/90 rounded-full w-10 h-10 flex items-center justify-center z-10 transition-all hover:scale-110">
+          &times;
+        </button>
+        <video id="modal-video" class="w-full aspect-video" controls poster=""></video>
+        <div class="p-4 bg-gradient-to-t from-black/80 to-transparent absolute bottom-0 left-0 right-0">
+          <h3 id="modal-title" class="text-xl font-bold"></h3>
+        </div>
+      </div>
     </div>
   </div>
 
