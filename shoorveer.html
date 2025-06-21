@@ -97,7 +97,7 @@
 
   <main class="container mx-auto px-4 py-24">
     <h2 class="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-      Season 1 Episodes
+      Complete Season 1
     </h2>
     <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
   </main>
@@ -120,21 +120,8 @@
   <script>
     const episodes = {
       season1: [
-        { title: "The Beginning", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/464b62ba6b90e85df275c28f050d72f1/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25kMNFTTUhGbPR0Z610VZhnT6RGaORFbop1RRhnWqVEMPRVV18ERjBjWX1UP:1748895584:213.232.235.66:0674ab6ae9786ce09fc9a17cdbf422b7704e5cd0806ae18196026d662a9d6db0/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7177/1738650977177-h" },
-        { title: "Agent 23", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2pVbFpnTyIFaO1mUq90VKtmWXlFNNpHbo9ERC1WWqV1dPdUT5lFVK1WTEVVP:1748896310:89.116.30.152:f6f60863e241d7e0c983220f52c2d16e2db5035c94fa848ca00ede1234a47c6a/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2934/1302934-h-3ec5c3ccfb11" },
-        { title: "The Pack", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25kaRRjTqFlePdUV4pVbNJjWqpVaPdkUrlVba1WTEVUNPRkUp1kanVTWUlUP:1748896390:89.116.30.152:4eef9b1c1a3861b493cd2d189652b02886d5a20bbc2d2b1380d97a3fca030d8f/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2940/1302940-h-36ec2941c9f6" },
-        { title: "Mayday! Mayday! Mayday!", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERNRjTU5UaN1mUp50VWxWTEFUMadVVyolaK1WWqdGNOdURzkFVNNTW6VUP:1748896408:89.116.30.152:41bab2dcddab1d015f680a06a79cd64eb1539688b88a30d028b13600d4f5bf33/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2945/1302945-h-798e705add87" },
-        { title: "Plan B", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25kakpWTyUlMaRUV51EVRhnWqVVMZdVR55kMVNTWUZEbNpGZp50RVlXWUNWP:1748896429:89.116.30.152:8f15d9a12098f69856e5692269c39234830bab6c5f762f17b3bdf8dfcb8f4ef5/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2948/1302948-h-61a71cf82243" },
-        { title: "The Game Begins Now", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2llMVJzTE1ENNR0Zw4ERWpmTykVeadURz4kerlXTqlVNORVSw40VNdXWqFUP:1748896456:89.116.30.152:ec26f79a663423cc3edf58aaa971861899f44a65c530674a1965c2cd49482008/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2951/1302951-h-17d1640564e5" },
-        { title: "9 Minutes", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2lVbOtmTEVEMPRUSx80Rax2TUJUaap2ZwkFVnNzTHpUaNpWR140VZRTTt1UP:1748896481:89.116.30.152:ff85efdea2c437ee8e508effc6ff8bff60bb24d1aa9214a4e60dc19ba1e16383/./1080/index.m3u8",
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2953/1302953-h-3fef0d6cd639" },
-        { title: "Strike Back", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2l1VFRjTykVMOpXQ61ERO12TXZ0aNpXS31kMGpWW6xWbOR1Z3llakpmTHlUP:1748896505:89.116.30.152:fa1acf608cfe427df15a7103fb9aa743f8ff6d9b952d1155e66498821725e8c7/./1080/index.m3u8",
+        
+        { title: "", video: "https://mega.nz/embed/rpJVAaAT#n8cMf9H2Nr1O6AarrwJ1o68rglL2-b-2dpe-L22-sB0",
         image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2960/1302960-h-9c54fb166241" }
       ],
 
