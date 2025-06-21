@@ -1,220 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inspector Avinash</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Watch all episodes of Inspector Avinash Season 1 in HD quality">
+  <meta name="keywords" content="Inspector Avinash, Web Series, Crime Drama, Indian Series">
+  <meta property="og:title" content="Inspector Avinash - Season 1">
+  <meta property="og:description" content="Watch all episodes of Inspector Avinash Season 1">
+  <meta property="og:type" content="website">
+  <title>Inspector Avinash - Season 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      color: white;
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #0f2027;
+      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+      color: #fff;
     }
-    .navbar {
+
+    header {
+      background: #111;
+      text-align: center;
+      padding: 3rem 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+      color: #ffcc00;
+    }
+
+    .episode-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .episode-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .episode-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .poster {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-bottom: 2px solid #ffd700;
+      display: block;
+    }
+
+    .episode-content {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .episode-content h2 {
+      font-size: 1.2rem;
+      color: #ffd700;
+      margin: 0;
+    }
+
+    .video-player {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      z-index: 100;
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .video-header {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .video-header video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
       height: 100%;
-      object-fit: cover;
-    }
-    .video-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, transparent 50%);
-      display: flex;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
       flex-direction: column;
-      justify-content: flex-end;
-      align-items: flex-start;
-      padding: 0 5%;
-      padding-bottom: 10%;
-      z-index: 1;
+      padding: 1rem;
     }
-    .video-overlay h1 {
-      font-size: 4rem;
-      font-weight: 700;
+
+    .video-player iframe {
+      width: 100%;
+      max-width: 960px;
+      height: 54vw;
+      max-height: 540px;
+      border-radius: 12px;
+      border: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .loading-spinner {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffd700;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .episode-info {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .episode-runtime {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.3rem;
+    }
+
+    .back-button {
+      background: #ffd700;
+      color: #000;
+      padding: 0.6rem 1rem;
       margin-bottom: 1rem;
-      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-      background: linear-gradient(to right, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .video-overlay p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      line-height: 1.6;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      background-color: #111;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 2rem;
     }
+
     @media (max-width: 768px) {
-      .video-header {
-        padding-bottom: 56.25%; /* 16:9 aspect ratio for mobile */
+      header h1 {
+        font-size: 1.8rem;
+      }
+      .video-player iframe {
+        height: 56vw;
       }
     }
   </style>
 </head>
+
 <body>
-  <header class="video-header">
-    <video autoplay muted loop playsinline>
-      <source src="https://imdb-video.media-imdb.com/vi1280689177/1434659607842-pgv4ql-1684397866057.mp4?Expires=1748981176&Signature=B5DlBQmSDjJ7qEDisIWuv04oCkx0y93MI9TZKJev7L2yidKhcU7KgCRMbSM-ErHBn~1-PaapwgywgZz9wAodn5bi7zz0LCDO87dhF8cO~KB8bVZ3bJP15A7ERN-Tjq0gInI97VAqvDBsWNduUm9wFdWWEOk5O~eqf8Uu8XRZpfV~PSt93wn7F0je1sckuXUQa1JPocQkOynARXQpEiCKMRYigSu5gz1CUnV2bLvyVgEix4g3oNH88vrm~KJlReNrD5ADhVPuVvbOon8txMyEkXxx5VgyGyqLe0Cn~t0HoDFi2iWmycP8snEPBueeaBR6z1ge-rSmM8iYASEAWE4Pog__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
-      <!-- Fallback image if video doesn't load -->
-      <img src="https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/1817/1706697671817-i" alt="Special OPS Banner" style="width: 100%; height: auto;">
-    </video>
-    <div class="video-overlay">
-      <h1>Inspector Avinash</h1>
-      <p>Set in 1998 UP, this is the story of a dynamic cop leading a Special Task Force which becomes instrumental in eliminating a dreaded weapons cartel.</p>
-      <div class="mt-6 flex gap-4">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium flex items-center transition-all duration-300 transform hover:scale-105">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-          </svg>
-          Watch Now
-        </button>
-        <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-full font-medium flex items-center transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          More Info
-        </button>
-      </div>
-    </div>
+  <header>
+    <h1>Inspector Avinash - Season 1</h1>
   </header>
 
-  <main class="container mx-auto px-4 py-8">
-    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  </main>
-
-  <div id="modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-lg flex items-center justify-center z-50 p-4">
-    <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl w-full max-w-5xl relative border border-gray-700 shadow-2xl">
-      <button onclick="closeModal()" class="absolute -top-3 -right-3 text-white text-xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-110">
-        &times;
-      </button>
-      <video id="modal-video" class="w-full rounded-xl shadow-2xl" controls poster=""></video>
-      <div class="mt-4 flex justify-between items-center">
-        <h3 id="modal-title" class="text-xl font-semibold"></h3>
-        <div class="flex gap-2">
-          <button class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-            </svg>
-          </button>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-            </svg>
-          </button>
-        </div>
+  <main class="episode-container">
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/nwoQ3Q4T#KdszzNxEWhYR5pF8cY3aI3Z5iglN_oUCRhhpwgK0a0Q')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/oZvSVsEGCZygrxrB5oEcDnKh2kK.jpg" alt="Episode 1">
+      <div class="episode-content">
+        <h2>Episode 1</h2>
+        <div class="episode-info">Avinash solves his first major case as inspector</div>
+        <div class="episode-runtime">45 min</div>
       </div>
     </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/X0BT1KRC#Sa5EyILcZjYpzOuh3PdQf8tDawpbTIRoRAYGcLeOGOQ')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/xSPPIyLEEKg14LS1s3xqrt3B8zi.jpg" alt="Episode 2">
+      <div class="episode-content">
+        <h2>Episode 2</h2>
+        <div class="episode-info">The investigation takes an unexpected turn</div>
+        <div class="episode-runtime">48 min</div>
+      </div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/StRTnIJZ#Vvu3KmnSQ4JtUNHwyc-HkK0yDUAN82CQSvOI-N-Z00s')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/2SrviWdW9mBlCAjvalNvOiAvAXL.jpg" alt="Episode 3">
+      <div class="episode-content"><h2>Episode 3</h2></div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/DtwAgAZS#nzHbdaTmVDOcCeSY-ybHYUCVmuQSblp42b0LRfSll6g')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/wHlPmJcLsBag8ffFC2yL3w4Vk3D.jpg" alt="Episode 4">
+      <div class="episode-content"><h2>Episode 4</h2></div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/y85ygDDK#Xo-xbiNmE4FcTKERXfhHNJWvzKRjJKBPnCU9lk2nyN0')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/bwFAuSLSNzZNo2oDMSyruPfxaqj.jpg" alt="Episode 5">
+      <div class="episode-content"><h2>Episode 5</h2></div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/T5REzazT#8VsDwVHUwAHzSnif0oxmGaekpT5tg06Blwr35uy-b-I')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/v61EDpd1phgUTmNIgFvfj4aoGuT.jpg" alt="Episode 6">
+      <div class="episode-content"><h2>Episode 6</h2></div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/3kBAzRhT#r8TCDb2g5vytXbW_Mac4FVfyqPS3LwU4tjOgFpZIRwM')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/eb0wsnoPvjtSeAoEtGfqlQv3irw.jpg" alt="Episode 7">
+      <div class="episode-content"><h2>Episode 7</h2></div>
+    </div>
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/OsxgEK5J#cxbc3208Kyy0zo-wTF6zeWeC2XrN3zPqteshPcHcfOU')">
+      <img class="poster" src="https://wsrv.nl/?url=https://image.tmdb.org/t/p/original/1CcB8WD9P9ZKvPaZTmkDNG93q7t.jpg" alt="Episode 8">
+      <div class="episode-content"><h2>Episode 8</h2></div>
+    </div>
+  </main>
+
+  <div class="video-player" id="videoPlayer">
+    <button class="back-button" onclick="closeVideo()">&larr; Back</button>
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    <iframe id="videoFrame" src="" allowfullscreen></iframe>
   </div>
 
+  <footer>
+    &copy; 2025 Inspector Avinash Series Viewer. Fan Project.
+  </footer>
+
   <script>
-    const episodes = {
-      season1: [
-        { title: "Shankhnaad & Mayajaal", video: "https://host.vkcdn5.com/v/01/00000/p6bmjppn9l7z_l/l.mp4?t=IQgmeoWlgqesfHoqO1dN7kgPQ4kQi7HyO-v3FljRabQ&s=1749348411&e=43200&v=1692180&sp=3000&i=0.3", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9562/1734124049562-h" },
-        { title: "Chakravyuh", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29ERnFTTHpFbOpXQwk1VRlXTEJUaNR0Z5llaBdXWtFFMOpmVp1kaVFjWqFVP:1748899321:89.116.30.152:eb6a40e8135fac30b14ad0e12c1fab8e6936edcc8ee7a6425a61399c6cc23366/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3597/1734124003597-h" },
-        { title: "Ranneeti", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21keWpWW6ZUbPRkVt1kMJlnTqllMZRVR140VRlXWqJ1aaRFZsl1VJJzTUFVP:1748899351:89.116.30.152:290dba339b8ad728ece5e36d78562dd21a764b67873d0013c63a486366fc623f/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7275/1734124107275-h" },
-        { title: "Bisaat", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21EVGtWWt1EMPRUTzoFRFdXWUp0aNpnSr10VZVTTUZ0aapGbtlleapWWqdWP:1748899376:89.116.30.152:8c969e6a8dec6f02e60c796e415cf1a21b09b15cf330322dafe20bd031448247/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7006/1734124097006-h" },
-        { title: "Taandav", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21kejpnTElUMadUS61EVndXTXpVbNpnQq10RNdXWUlkMaRkSqpVbW1WWqtWP:1748899403:89.116.30.152:88f636a960f1371dbc33586a8ab5803af339360461b90b832d5685b27d9df9cc/./1080/index.m3u8", 
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3030/1734124083030-h" },
-        { title: "Yudharambh", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT290RVdXTykENPdUS51ERZhXTUhGbOp3a04UbVRjWqdGNNRkUql1VRpnWUNWP:1748899427:89.116.30.152:c1328388aa4deeb5ee0744f8e8cf6e2788041d5e9e73c01e6af02ecc24a2e75b/./1080/index.m3u8",
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/4814/1734124234814-h" },
-        { title: "Kurukshetra", video: "https://cdn4521.lada357janet.com:443/stream2/i-arch-400/a5b5ae66248be0039515bda55fa1d488/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2llaBlnTE10dPdVSyolaZRjTq1keapGZppFRSxmWEVlMORUWz8EVGlWWXlVP:1748899449:89.116.30.152:a9574046c01269e06aa50a77c5d54ea781aa740f2e30e600930eccd06282e583/./1080/index.m3u8",
-        image: "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/43/1734124230043-h" }
-      ],
+    function playVideo(url) {
+      const player = document.getElementById('videoPlayer');
+      const frame = document.getElementById('videoFrame');
+      const spinner = document.getElementById('loadingSpinner');
+      
+      player.style.display = 'flex';
+      spinner.style.display = 'block';
+      frame.style.opacity = '0';
+      frame.src = url;
+      window.scrollTo(0, 0);
+      
+      frame.onload = function() {
+        spinner.style.display = 'none';
+        frame.style.opacity = '1';
+      };
+    }
 
-    };
+    function closeVideo() {
+      document.getElementById('videoFrame').src = '';
+      document.getElementById('videoPlayer').style.display = 'none';
+    }
 
-    // Initialize video header
-    document.addEventListener('DOMContentLoaded', function() {
-      const video = document.querySelector('.video-header video');
-      video.play().catch(e => {
-        console.log("Autoplay prevented, showing fallback image");
-        const fallbackImg = document.createElement('img');
-        fallbackImg.src = "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/4137/654137-h";
-        fallbackImg.alt = "Special OPS Banner";
-        fallbackImg.className = "w-full h-full object-cover";
-        document.querySelector('.video-header').appendChild(fallbackImg);
-      });
+    // Close video with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeVideo();
+      }
     });
-
-    function isStreamLink(url) {
-      return url.endsWith('.m3u8') || url.endsWith('.txt');
-    }
-
-    function loadSeason(season) {
-      const grid = document.getElementById('episode-grid');
-      grid.innerHTML = '';
-      episodes[season].forEach((ep) => {
-        const card = document.createElement('div');
-        card.className = 'bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1';
-        card.innerHTML = `
-          <div class="relative">
-            <img src="${ep.image}" alt="${ep.title}" class="w-full h-48 object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-center opacity-0 group-hover:opacity-100 transition duration-500 p-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <div class="p-4">
-            <h2 class="text-lg font-semibold mb-2">${ep.title}</h2>
-            <button class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-3 rounded-lg font-medium transition-all duration-300 transform group-hover:scale-105">
-              Watch Episode
-            </button>
-          </div>
-        `;
-        card.querySelector('button').onclick = () => {
-          if (isStreamLink(ep.video)) {
-            window.location.href = `player.html?video=${encodeURIComponent(ep.video)}`;
-          } else {
-            const video = document.getElementById('modal-video');
-            video.src = ep.video;
-            video.poster = ep.image;
-            document.getElementById('modal').classList.remove('hidden');
-            video.play();
-          }
-        };
-        grid.appendChild(card);
-      });
-    }
-
-    function closeModal() {
-      const video = document.getElementById('modal-video');
-      video.pause();
-      video.src = '';
-      document.getElementById('modal').classList.add('hidden');
-    }
-
-    loadSeason('season1');
   </script>
 </body>
+
 </html>
