@@ -1,195 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Special Ops - Series Viewer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #0f2027;
-      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
-      color: #fff;
-    }
-
-    header {
-      background: #111;
-      text-align: center;
-      padding: 3rem 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.2rem;
-      letter-spacing: 1px;
-      color: #ffcc00;
-    }
-
-    .season-title {
-      text-align: left;
-      margin: 2rem 1rem 1rem;
-      font-size: 1.5rem;
-      color: #ffd700;
-    }
-
-    .episode-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      padding: 0 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .episode-card {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-    }
-
-    .episode-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-    }
-
-    .poster {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      border-bottom: 2px solid #ffd700;
-      display: block;
-    }
-
-    .episode-content {
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .episode-content h2 {
-      font-size: 1.2rem;
-      color: #ffd700;
-      margin: 0;
-    }
-
-    .video-player {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 1rem;
-    }
-
-    .video-player iframe {
-      width: 100%;
-      max-width: 960px;
-      height: 54vw;
-      max-height: 540px;
-      border-radius: 12px;
-      border: none;
-    }
-
-    .back-button, .download-button {
-      background: #ffd700;
-      color: #000;
-      padding: 0.6rem 1rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-right: 1rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      background-color: #111;
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 1.8rem;
-      }
-      .video-player iframe {
-        height: 56vw;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Special Ops - Series Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+margin: 0;
+padding: 0;
+font-family: 'Roboto', sans-serif;
+background: #0f2027;
+background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+color: #fff;
+}
+header {
+background: #111;
+text-align: center;
+padding: 3rem 1rem;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+header h1 {
+margin: 0;
+font-size: 2.2rem;
+color: #ffcc00;
+}
+.season-title {
+text-align: left;
+margin: 2rem 1rem 1rem;
+font-size: 1.5rem;
+color: #ffd700;
+}
+.episode-container {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.5rem;
+padding: 0 1rem;
+max-width: 1200px;
+margin: auto;
+}
+.episode-card {
+background-color: rgba(255, 255, 255, 0.08);
+border-radius: 20px;
+overflow: hidden;
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+transition: 0.3s;
+cursor: pointer;
+}
+.episode-card:hover {
+transform: scale(1.02);
+}
+.poster {
+width: 100%;
+aspect-ratio: 16/9;
+object-fit: cover;
+border-bottom: 2px solid #ffd700;
+}
+.episode-content { padding: 1rem; text-align: center; }
+.episode-content h2 { font-size: 1.2rem; color: #ffd700; margin: 0; }
+.video-player {
+display: none;
+position: fixed; top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(0,0,0,0.95);
+z-index: 1000;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+padding: 1rem;
+}
+.video-player iframe {
+width: 100%;
+max-width: 960px;
+height: 54vw;
+max-height: 540px;
+border-radius: 12px;
+border: none;
+}
+button, .download-button {
+background: #ffd700; color: #000;
+padding: 0.6rem 1rem; margin-bottom: 1rem;
+font-weight: bold; border-radius: 6px;
+cursor: pointer; margin-right: 1rem;
+border: none;
+}
+.hidden { display: none; }
+footer {
+text-align: center; padding: 1.5rem 1rem;
+background-color: #111; font-size: 0.9rem; color: #aaa;
+margin-top: 2rem;
+}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>Special Ops - Series Viewer</h1>
-  </header>
 
-  <div class="season-title">Special OPS</div>
-  <main class="episode-container">
-    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/75ASnCZS#UZyL_fVC0Gprig9jcXXrmJgI9OliJTjs1eYyOCF15cY')">
-      <img class="poster" src="https://image.tmdb.org/t/p/w1280/3AIuPJ8ceXH5tCnwFhcMQewgN1p.jpg" alt="Season 1">
-      <div class="episode-content"><h2>Watch Season 1</h2></div>
-    </div>
-  </main>
+<header><h1>Special Ops - Series Viewer</h1></header>
 
-  <div class="season-title">Special Ops 1.5: The Himmat Story</div>
-  <main class="episode-container">
-    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/2gxmHRpC#s3N8PksdVhv5p463wHCElt0_Kq9WW0rI_2uRmwx_8Ss')">
-      <img class="poster" src="https://feeds.abplive.com/onecms/images/uploaded-images/2021/10/19/a0440758af30841e953743531c753bd4_original.jpg?impolicy=abp_cdn&imwidth=1200" alt="Season 2">
-      <div class="episode-content"><h2>Watch Season 2</h2></div>
-    </div>
-  </main>
+<!-- Season 1 -->
+<div class="season-title">Special OPS</div>
+<main class="episode-container">
+<div class="episode-card" onclick="playVideo('https://mega.nz/embed/75ASnCZS#UZyL_fVC0Gprig9jcXXrmJgI9OliJTjs1eYyOCF15cY')">
+<img class="poster" src="https://image.tmdb.org/t/p/w1280/3AIuPJ8ceXH5tCnwFhcMQewgN1p.jpg">
+<div class="episode-content"><h2>Watch Season 1</h2></div>
+</div>
+</main>
 
-  <div class="season-title">Special Ops 2.0 (Coming Soon)</div>
-  <main class="episode-container">
-    <div class="episode-card">
-      <img class="poster" src="https://i.ytimg.com/vi/Se5nggefysA/maxresdefault.jpg" alt="Coming Soon">
-      <div class="episode-content"><h2>Expected next month</h2></div>
-    </div>
-  </main>
+<!-- Season 2 -->
+<div class="season-title">Special Ops 1.5: The Himmat Story</div>
+<main class="episode-container">
+<div class="episode-card" onclick="playVideo('https://mega.nz/embed/2gxmHRpC#s3N8PksdVhv5p463wHCElt0_Kq9WW0rI_2uRmwx_8Ss')">
+<img class="poster" src="https://feeds.abplive.com/onecms/images/uploaded-images/2021/10/19/a0440758af30841e953743531c753bd4_original.jpg?impolicy=abp_cdn&imwidth=1200">
+<div class="episode-content"><h2>Watch Season 2</h2></div>
+</div>
+</main>
 
-  <div class="video-player" id="videoPlayer">
-    <div>
-      <button class="back-button" onclick="closeVideo()">&larr; Back</button>
-      <a class="download-button" id="downloadLink" href="#" target="_blank" download>Download</a>
-    </div>
-    <iframe id="videoFrame" src="" allowfullscreen></iframe>
-  </div>
+<!-- ✅ Season 3 with 7 Episodes -->
+<div class="season-title">Special Ops 2.0</div>
+<main class="episode-container">
+<div class="episode-card" onclick="toggleEpisodes()">
+<img class="poster" src="https://static.toiimg.com/thumb/msid-122574475,width-1280,height-720,resizemode-4/122574475.jpg">
+<div class="episode-content"><h2>Show Episodes</h2></div>
+</div>
+</main>
 
-  <footer>
-    &copy; 2025 Special Ops Series Viewer. Fan Project.
-  </footer>
+<div id="season3-episodes" class="episode-container hidden">
 
-  <script>
-    function playVideo(url) {
-      document.getElementById('videoFrame').src = url;
-      document.getElementById('downloadLink').href = url.replace('/embed/', '/file/');
-      document.getElementById('videoPlayer').style.display = 'flex';
-      window.scrollTo(0, 0);
-    }
+<script>
+const eps = [
+{t:"Episode 1",l:"https://mega.nz/file/AyJnkbjT#oF2FP54S0yfAxbIe3dyvXlh9VuxacDp_V-AuQuUOiz0",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/8541/1752567188541-h"},
+{t:"Episode 2",l:"https://mega.nz/file/4mIkyZbS#7Ip5K7Z5RlBUpGJ_JASIpjE8BBHUOx5ichX8udrqChY",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/7891/1752569267891-h"},
+{t:"Episode 3",l:"https://mega.nz/file/snwngAjb#gHEKIlRj6UaF23NHb055KhjyH_Dewh9bhPwZyeqv5F0",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/3076/1752569513076-h"},
+{t:"Episode 4",l:"https://mega.nz/file/IuARXD6C#C-jkHidev3fLhx5_Wzu8-5HzBn4BRnblDBb38cSSieY",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/9619/1752569989619-h"},
+{t:"Episode 5",l:"https://mega.nz/file/wnAVkJhA#MYnJci9zIdoIxL0PC8dTA4d2dNUXfPe5tRIyfXdQPak",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/878/1752570230878-h"},
+{t:"Episode 6",l:"https://mega.nz/file/FywXRQhB#G1ASuef2ddY2-6T90ulKh33Mi7WdYAYs88FNehjgE20",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/6005/1752570476005-h"},
+{t:"Episode 7",l:"https://mega.nz/file/pzZEwbpC#nfx4s8W7t8eB25utiAyJWGtGpGABkhi9G1CVdEedJg0",i:"https://img10.hotstar.com/image/upload/f_auto,h_124/sources/r1/cms/prod/2420/1752570762420-h"}
+];
 
-    function closeVideo() {
-      document.getElementById('videoFrame').src = '';
-      document.getElementById('videoPlayer').style.display = 'none';
-    }
-  </script>
+document.write(eps.map(e=>`
+<div class="episode-card" onclick="playVideo('${e.l.replace('/file/','/embed/')}')">
+<img class="poster" src="${e.i}">
+<div class="episode-content"><h2>${e.t}</h2></div>
+</div>
+`).join(''));
+</script>
+</div>
+
+<!-- Player -->
+<div class="video-player" id="videoPlayer">
+<div>
+<button onclick="closeVideo()">&larr; Back</button>
+<a id="downloadLink" class="download-button" target="_blank">Download</a>
+</div>
+<iframe id="videoFrame" allowfullscreen></iframe>
+</div>
+
+<footer>&copy; 2025 Special Ops Fan Project</footer>
+
+<script>
+function playVideo(url){
+document.getElementById('videoFrame').src = url;
+document.getElementById('downloadLink').href = url.replace('/embed/','/file/');
+document.getElementById('videoPlayer').style.display='flex';
+}
+function closeVideo(){
+document.getElementById('videoFrame').src="";
+document.getElementById('videoPlayer').style.display='none';
+}
+function toggleEpisodes(){
+document.getElementById("season3-episodes").classList.toggle("hidden");
+}
+</script>
+
 </body>
-
 </html>
