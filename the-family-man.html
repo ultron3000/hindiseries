@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Family Man Series</title>
+  <title>The Family Man</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -30,52 +30,34 @@
       color: #ffcc00;
     }
 
-    .tagline {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
-      color: #aaa;
+    .season-title {
+      text-align: left;
+      margin: 2rem 1rem 1rem;
+      font-size: 1.5rem;
+      color: #ffd700;
     }
 
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .season-container {
+    .episode-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
-      padding: 1rem;
+      padding: 0 1rem;
       max-width: 1200px;
       margin: auto;
     }
 
-    .season-card {
+    .episode-card {
       background-color: rgba(255, 255, 255, 0.05);
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
-      position: relative;
     }
 
-    .season-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .season-card:focus {
-      outline: 2px solid #ffd700;
-      outline-offset: 2px;
+    .episode-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
     }
 
     .poster {
@@ -87,15 +69,15 @@
       display: block;
     }
 
-    .season-content {
+    .episode-content {
       padding: 1rem;
+      text-align: center;
     }
 
-    .season-content h2 {
-      margin-top: 0.5rem;
-      font-size: 1.4rem;
+    .episode-content h2 {
+      font-size: 1.2rem;
       color: #ffd700;
-      text-align: center;
+      margin: 0;
     }
 
     .video-player {
@@ -111,28 +93,6 @@
       justify-content: center;
       flex-direction: column;
       padding: 1rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .video-player.active {
-      display: flex;
-      opacity: 1;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #ffd700;
-      animation: spin 1s ease-in-out infinite;
-      margin-bottom: 1rem;
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
 
     .video-player iframe {
@@ -144,7 +104,7 @@
       border: none;
     }
 
-    .back-button {
+    .back-button, .download-button {
       background: #ffd700;
       color: #000;
       padding: 0.6rem 1rem;
@@ -153,19 +113,7 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-    }
-
-    .coming-soon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      color: #ccc;
-      font-size: 1rem;
-      text-align: center;
-      padding: 1rem;
+      margin-right: 1rem;
     }
 
     footer {
@@ -189,79 +137,52 @@
 </head>
 
 <body>
-  <header role="banner">
-    <h1>The Family Man</h1>
-    <p class="tagline"s</p>
+  <header>
+    <h1>The Family Man Series</h1>
   </header>
 
-  <main class="season-container">
-    <div class="season-card" onclick="playVideo('https://mega.nz/embed/XQcF2K4b#zWtAMtLbK6oFQqnLdVqbBqLYtXMBBPO2RpTzbHQYfD4')">
-      <img class="poster" src="https://images.indianexpress.com/2019/09/amazon_familyman_2.jpg" alt="Panchayat Season 1 Poster">
-      <div class="season-content">
-        <h2>Season 1</h2>
-      </div>
+  <div class="season-title"></div>
+  <main class="episode-container">
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/FvYUQArZ#Dy2zBP3WzBnZDgsdF03MOxSrq0-Fvb3pr0EcVa4CuB4')">
+      <img class="poster" src="https://images.indianexpress.com/2019/09/amazon_familyman_2.jpg" alt="Season 1">
+      <div class="episode-content"><h2>Watch Season 1</h2></div>
     </div>
+  </main>
 
-    <div class="season-card" onclick="playVideo('https://mega.nz/embed/bMM2laDY#d1fCOMGI9NrFwyVU5tfNdKWhnXw_N-PUboq6XRQOAMk')">
-      <img class="poster" src="https://media.assettype.com/tnm%2Fimport%2Fsites%2Fdefault%2Ffiles%2FTheFamilyMan_Season2_040621_1200x800.jpg?w=480&auto=format%2Ccompress&fit=max" alt="Panchayat Season 2 Poster">
-      <div class="season-content">
-        <h2>Season 2</h2>
-      </div>
+  <div class="season-title"></div>
+  <main class="episode-container">
+    <div class="episode-card" onclick="playVideo('https://mega.nz/embed/87pTyaxI#DZzFEFGar9u8Pu60L2i9Gpj21aAM2CUZ8T3HJrxJevM')">
+      <img class="poster" src="https://media.assettype.com/tnm%2Fimport%2Fsites%2Fdefault%2Ffiles%2FTheFamilyMan_Season2_040621_1200x800.jpg?w=480&auto=format%2Ccompress&fit=max" alt="Season 2">
+      <div class="episode-content"><h2>Watch Season 2</h2></div>
     </div>
+  </main>
 
-    
+ 
+
+  <div class="video-player" id="videoPlayer">
+    <div>
+      <button class="back-button" onclick="closeVideo()">&larr; Back</button>
+      <a class="download-button" id="downloadLink" href="#" target="_blank" download>Download</a>
+    </div>
+    <iframe id="videoFrame" src="" allowfullscreen></iframe>
+  </div>
 
   <footer>
-    &copy; 2025 The Family Man Series Viewer. Designed for fans by fans. All rights reserved.
+    &copy; The Family Man Series Viewer. Fan Project.
   </footer>
 
   <script>
     function playVideo(url) {
-      const player = document.getElementById('videoPlayer');
-      const frame = document.getElementById('videoFrame');
-      const spinner = document.getElementById('spinner');
-      
-      player.classList.add('active');
-      spinner.style.display = 'block';
-      frame.style.display = 'none';
-      
-      frame.onload = function() {
-        spinner.style.display = 'none';
-        frame.style.display = 'block';
-      };
-      
-      frame.src = url;
+      document.getElementById('videoFrame').src = url;
+      document.getElementById('downloadLink').href = url.replace('/embed/', '/file/');
+      document.getElementById('videoPlayer').style.display = 'flex';
       window.scrollTo(0, 0);
-      document.body.style.overflow = 'hidden';
     }
 
     function closeVideo() {
-      const player = document.getElementById('videoPlayer');
-      const frame = document.getElementById('videoFrame');
-      
-      frame.src = '';
-      player.classList.remove('active');
-      document.body.style.overflow = '';
-      
-      // Reset for next play
-      setTimeout(() => {
-        frame.style.display = 'none';
-      }, 300);
+      document.getElementById('videoFrame').src = '';
+      document.getElementById('videoPlayer').style.display = 'none';
     }
-
-    // Close video when clicking outside content
-    document.getElementById('videoPlayer').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeVideo();
-      }
-    });
-
-    // Close video with Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && document.getElementById('videoPlayer').classList.contains('active')) {
-        closeVideo();
-      }
-    });
   </script>
 </body>
 
