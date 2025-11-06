@@ -1,268 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bhaukaal Series</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <title>Bhaukaal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #0f2027;
-      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
-      color: #fff;
-    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #ffcc00; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ffdd33; }
 
-    header {
-      background: #111;
-      text-align: center;
-      padding: 3rem 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.2rem;
-      letter-spacing: 1px;
-      color: #ffcc00;
-    }
-
-    .tagline {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
-      color: #aaa;
-    }
-
-    .sr-only {
+    .glow-effect { position: relative; }
+    .glow-effect::after {
+      content: '';
       position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .season-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      padding: 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .season-card {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .season-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .season-card:focus {
-      outline: 2px solid #ffd700;
-      outline-offset: 2px;
-    }
-
-    .poster {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      border-bottom: 2px solid #ffd700;
-      display: block;
-    }
-
-    .season-content {
-      padding: 1rem;
-    }
-
-    .season-content h2 {
-      margin-top: 0.5rem;
-      font-size: 1.4rem;
-      color: #ffd700;
-      text-align: center;
-    }
-
-    .video-player {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 1rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .video-player.active {
-      display: flex;
-      opacity: 1;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #ffd700;
-      animation: spin 1s ease-in-out infinite;
-      margin-bottom: 1rem;
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .video-player iframe {
-      width: 100%;
-      max-width: 960px;
-      height: 54vw;
-      max-height: 540px;
+      inset: 0;
       border-radius: 12px;
-      border: none;
+      box-shadow: 0 0 15px rgba(255, 204, 0, 0);
+      transition: box-shadow 0.3s ease;
+      pointer-events: none;
+    }
+    .glow-effect:hover::after { box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #ffcc00, #ff9900);
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
-    .back-button {
-      background: #ffd700;
-      color: #000;
-      padding: 0.6rem 1rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    .showcase-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .showcase-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%); z-index: 1; }
+    .showcase-content { position: relative; z-index: 2; }
 
-    .coming-soon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      color: #ccc;
-      font-size: 1rem;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      background-color: #111;
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-top: 2rem;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 1.8rem;
-      }
-      .video-player iframe {
-        height: 56vw;
-      }
-    }
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
+    .video-container iframe, .video-container video { position: absolute; inset: 0; width: 100%; height: 100%; }
   </style>
 </head>
+<body class="bg-black text-gray-100 min-h-screen">
 
-<body>
-  <header role="banner">
-    <h1>Bhaukaal</h1>
-    <p class="tagline"s</p>
-  </header>
-
-  <main class="season-container">
-    <div class="season-card" onclick="playVideo('https://mega.nz/embed/nsYTVRwR#GYDbi0Qin_cwr6Yl2g9PMAQjWKkMtnWqE_KfwnzIhuc')">
-      <img class="poster" src="https://images.justwatch.com/backdrop/322489752/s640/season-1" alt="Panchayat Season 1 Poster">
-      <div class="season-content">
-        <h2>Season 1</h2>
+<header class="sticky top-0 z-50 bg-black bg-opacity-90 backdrop-blur-sm border-b border-yellow-600/20">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-shield-alt text-black text-xl"></i>
       </div>
+      <h1 class="text-2xl font-bold gradient-text">Bhaukaal</h1>
     </div>
 
-    <div class="season-card" onclick="playVideo('https://mega.nz/embed/qtZTyRoI#Cl5TEiXEeIQXqNjV_kbyBbj3D09PFMhWsUwqqdikYns')">
-      <img class="poster" src="https://m.media-amazon.com/images/M/MV5BZDFkOGZkYzctNzFlMi00ZWUwLWFlNTgtMGZjMzI1YmM4MDg2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Panchayat Season 2 Poster">
-      <div class="season-content">
-        <h2>Season 2</h2>
-      </div>
+    <div class="flex items-center space-x-4">
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-800 transition">
+        <i class="fas fa-moon text-yellow-500"></i>
+      </button>
+      <button id="search-btn" class="p-2 rounded-full hover:bg-gray-800 transition">
+        <i class="fas fa-search text-yellow-500"></i>
+      </button>
     </div>
+  </div>
 
-    
+  <div id="search-bar" class="hidden px-4 pb-4">
+    <div class="relative">
+      <input type="text" placeholder="Search episodes..." class="w-full bg-gray-900 border border-yellow-600/30 rounded-full py-2 px-4 pl-10 text-white">
+      <i class="fas fa-search absolute left-3 top-3 text-yellow-500"></i>
+    </div>
+  </div>
+</header>
 
-  <footer>
-    &copy; 2025 Bhaukaal Series Viewer. Designed for fans by fans. All rights reserved.
-  </footer>
+<main class="container mx-auto px-4 py-8">
+  <section class="mb-12 relative overflow-hidden rounded-xl h-64 md:h-96">
+    <video autoplay muted loop class="showcase-video">
+      <!-- season trailer thumbnail used as a looping muted visual (not the actual trailer file) -->
+      <source src="https://i.ytimg.com/vi/J9fMNoSrY9A/maxresdefault.jpg" type="video/mp4">
+    </video>
+    <div class="showcase-overlay"></div>
+    <div class="showcase-content h-full flex flex-col justify-end p-6 md:p-8">
+      <p class="text-gray-300 mb-4 max-w-lg">Bhaukaal follows SSP Naveen Sikhera as he battles the gangs that rule Muzaffarnagar. High on action and inspired by real events — two seasons, 20 episodes. Stream on MX Player.</p>
+      <p class="text-sm text-gray-400">(Show info & episode synopses sourced from MX Player / Plex and Wikipedia.)</p>
+    </div>
+  </section>
 
-  <script>
-    function playVideo(url) {
-      const player = document.getElementById('videoPlayer');
-      const frame = document.getElementById('videoFrame');
-      const spinner = document.getElementById('spinner');
-      
-      player.classList.add('active');
-      spinner.style.display = 'block';
-      frame.style.display = 'none';
-      
-      frame.onload = function() {
-        spinner.style.display = 'none';
-        frame.style.display = 'block';
-      };
-      
-      frame.src = url;
-      window.scrollTo(0, 0);
-      document.body.style.overflow = 'hidden';
-    }
+  <div class="flex overflow-x-auto mb-6 pb-2">
+    <div class="flex space-x-2">
+      <button class="season-btn active bg-yellow-600 text-black px-4 py-2 rounded-full" data-season="all">All Episodes</button>
+      <button class="season-btn bg-gray-800 px-4 py-2 rounded-full" data-season="1">Season 1</button>
+      <button class="season-btn bg-gray-800 px-4 py-2 rounded-full" data-season="2">Season 2</button>
+    </div>
+  </div>
 
-    function closeVideo() {
-      const player = document.getElementById('videoPlayer');
-      const frame = document.getElementById('videoFrame');
-      
-      frame.src = '';
-      player.classList.remove('active');
-      document.body.style.overflow = '';
-      
-      // Reset for next play
-      setTimeout(() => {
-        frame.style.display = 'none';
-      }, 300);
-    }
+  <div class="flex flex-wrap justify-between mb-8 gap-4">
+    <div class="flex space-x-2 overflow-x-auto pb-2">
+      <button class="filter-btn active bg-yellow-600 text-black px-4 py-1 rounded-full">All</button>
+      <button class="filter-btn bg-gray-800 px-4 py-1 rounded-full">Crime</button>
+      <button class="filter-btn bg-gray-800 px-4 py-1 rounded-full">Drama</button>
+      <button class="filter-btn bg-gray-800 px-4 py-1 rounded-full">Action</button>
+      <button class="filter-btn bg-gray-800 px-4 py-1 rounded-full">Thriller</button>
+    </div>
+  </div>
 
-    // Close video when clicking outside content
-    document.getElementById('videoPlayer').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeVideo();
+  <section>
+    <h3 class="text-xl font-semibold mb-6"><i class="fas fa-list-ul text-yellow-500 mr-2"></i>Episodes</h3>
+    <div id="movies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
+  </section>
+</main>
+
+<footer class="bg-gray-900 border-t border-gray-800 mt-12 py-8 text-center text-gray-400">
+  © Bhaukaal · MX Player
+</footer>
+
+<!-- Playback Modal -->
+<div id="playback-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-90">
+  <div class="relative w-full max-w-4xl bg-gray-900 rounded-xl overflow-hidden">
+    <button id="close-modal" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
+    <div class="video-container">
+      <video id="modal-video" class="w-full" controls></video>
+    </div>
+    <div class="p-6">
+      <h3 id="modal-title" class="text-2xl font-bold mb-2"></h3>
+      <div id="season-episode" class="text-gray-400 text-sm mb-2"></div>
+      <div id="episode-duration" class="text-gray-400 text-sm mb-4"></div>
+      <p id="modal-description" class="text-gray-300"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= BH A U K A A L EPISODE DATA =========
+   I replaced the original Groot entries with Bhaukaal Season 1 & 2 (10 eps each).
+   Episode synopses are taken/paraphrased from Plex / MX Player listings. */
+const movies = [
+  // Season 1 (10 eps) — poster uses season1 trailer thumbnail (YouTube)
+  {
+    title: "Episode 1",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818", 
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Naveen Sikhera arrives as SSP in crime-ridden Muzaffarnagar and confronts the gangs that run the city.", 
+    duration: "32 min",
+    season: 1, episode: 1, tags: ["Crime","Drama"]
+  },
+  {
+    title: "Episode 2",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "An innocent man is kidnapped; Sikhera begins to assemble his team and push back against Shaukeen's influence.",
+    duration: "32 min",
+    season: 1, episode: 2, tags: ["Crime","Drama"]
+  },
+  {
+    title: "Episode 3",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Trust is tested as undercover operations begin and the police try to infiltrate the gangs.",
+    duration: "32 min",
+    season: 1, episode: 3, tags: ["Crime","Action"]
+  },
+  {
+    title: "Episode 4",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Sikhera's reforms create friction; a mobile-phone tracing unit helps the team pin down key operatives.",
+    duration: "32 min",
+    season: 1, episode: 4, tags: ["Crime","Thriller"]
+  },
+  {
+    title: "Episode 5",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Rifts appear in the criminal universe; politics and crime mix as the pressure mounts on the gangs.",
+    duration: "32 min",
+    season: 1, episode: 5, tags: ["Crime","Drama"]
+  },
+  {
+    title: "Episode 6",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "A massive encounter unfolds while police chase down gang members and tighten their net.",
+    duration: "32 min",
+    season: 1, episode: 6, tags: ["Action","Crime"]
+  },
+  {
+    title: "Episode 7",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Escapes, betrayals and a mole in the department — stakes rise as the Dedha/Shaukeen dynamics shift.",
+    duration: "32 min",
+    season: 1, episode: 7, tags: ["Crime","Thriller"]
+  },
+  {
+    title: "Episode 8",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "A brutal kidnapping and ransom escalate tensions; the police are ordered to halt some operations, complicating matters.",
+    duration: "32 min",
+    season: 1, episode: 8, tags: ["Drama","Crime"]
+  },
+  {
+    title: "Episode 9",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Political pressure and high-profile events distract the police; a courtroom encounter turns violent.",
+    duration: "32 min",
+    season: 1, episode: 9, tags: ["Action","Crime"]
+  },
+  {
+    title: "Episode 10",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/seasons/season-1-b562eb71a82084e7f596db8138ee818",
+    image: "https://i.ytimg.com/vi/J9fMNoSrY9A/hqdefault.jpg",
+    description: "Final confrontations and an intense action sequence lead to a decisive outcome for major gang figures.",
+    duration: "32 min",
+    season: 1, episode: 10, tags: ["Action","Drama"]
+  },
+
+  // Season 2 (10 eps) — poster uses season2 trailer thumbnail (YouTube)
+  {
+    title: "Episode 1",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-1-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Season 2 opens with Naveen setting his sights on the Dedha brothers — the stakes are higher and the danger deeper.",
+    duration: "32 min",
+    season: 2, episode: 1, tags: ["Crime","Drama"]
+  },
+  {
+    title: "Episode 2",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-2-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "An operation seizes weapons but a mole allows a key goon to escape; Dedha gang prepares a brutal response.",
+    duration: "32 min",
+    season: 2, episode: 2, tags: ["Crime","Thriller"]
+  },
+  {
+    title: "Episode 3",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-3-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Sikhera and his team chase money trails and plan to choke the gang's finances to destabilize them.",
+    duration: "32 min",
+    season: 2, episode: 3, tags: ["Drama","Crime"]
+  },
+  {
+    title: "Episode 4",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-4-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Internal betrayals and violent reprisals shift loyalties — families of gang members are put at risk.",
+    duration: "32 min",
+    season: 2, episode: 4, tags: ["Crime","Thriller"]
+  },
+  {
+    title: "Episode 5",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-5-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Tactics escalate as the police target the gang's infrastructure and attempt to cut off its support.",
+    duration: "32 min",
+    season: 2, episode: 5, tags: ["Action","Crime"]
+  },
+  {
+    title: "Episode 6",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-6-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Political pressure mounts; press conferences and public accusations complicate Naveen's mission.",
+    duration: "32 min",
+    season: 2, episode: 6, tags: ["Drama","Crime"]
+  },
+  {
+    title: "Episode 7",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-7-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Operations intensify; the Dedha brothers strike back while the police close in with new leads.",
+    duration: "32 min",
+    season: 2, episode: 7, tags: ["Action","Crime"]
+  },
+  {
+    title: "Episode 8",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-8-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Naveen is under scrutiny; the DGP demands results and the gang ups its violence to retain control.",
+    duration: "32 min",
+    season: 2, episode: 8, tags: ["Drama","Thriller"]
+  },
+  {
+    title: "Episode 9",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-9-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Clues point to the mole and major moves are planned; the net tightens around Pintu and Chintu Dedha.",
+    duration: "32 min",
+    season: 2, episode: 9, tags: ["Crime","Thriller"]
+  },
+  {
+    title: "Episode 10",
+    video: "https://www.mxplayer.in/show/watch-bhaukaal/season-2/episode-10-online-eeee5e4d7fdf623b143ecfb73683bb42",
+    image: "https://i.ytimg.com/vi/k6tMSo7xF_c/hqdefault.jpg",
+    description: "Season finale — raids, confrontations and the culmination of the police's efforts to break the Dedha brothers' hold.",
+    duration: "32 min",
+    season: 2, episode: 10, tags: ["Action","Drama"]
+  }
+];
+
+/* helper used in original template */
+function isMP4(url) { return /\.mp4($|\?)/i.test(url); }
+
+const container = document.getElementById('movies');
+const playbackModal = document.getElementById('playback-modal');
+const modalVideo = document.getElementById('modal-video');
+const modalTitle = document.getElementById('modal-title');
+const modalDescription = document.getElementById('modal-description');
+const seasonEpisode = document.getElementById('season-episode');
+const episodeDuration = document.getElementById('episode-duration');
+const closeModal = document.getElementById('close-modal');
+
+let currentSeason = 'all';
+let currentFilter = 'All';
+
+function initPage() {
+  renderMovies();
+  document.querySelectorAll('.season-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelector('.season-btn.active').classList.remove('active', 'bg-yellow-600', 'text-black');
+      this.classList.add('active', 'bg-yellow-600', 'text-black');
+      currentSeason = this.dataset.season;
+      renderMovies();
+    });
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelector('.filter-btn.active').classList.remove('active', 'bg-yellow-600', 'text-black');
+      this.classList.add('active', 'bg-yellow-600', 'text-black');
+      currentFilter = this.textContent;
+      renderMovies();
+    });
+  });
+
+  // search toggles
+  document.getElementById('search-btn').addEventListener('click', () => {
+    const bar = document.getElementById('search-bar');
+    bar.classList.toggle('hidden');
+  });
+
+  // theme toggle (kept original simple behaviour)
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('bg-black');
+    document.body.classList.toggle('bg-white');
+    document.body.classList.toggle('text-gray-100');
+    document.body.classList.toggle('text-gray-900');
+  });
+}
+
+function renderMovies() {
+  container.innerHTML = '';
+  let filtered = movies;
+  if (currentSeason !== 'all') filtered = filtered.filter(m => m.season == currentSeason);
+  if (currentFilter !== 'All') filtered = filtered.filter(m => m.tags.includes(currentFilter));
+
+  filtered.forEach((movie, i) => {
+    const card = document.createElement('div');
+    card.className = `movie-card fade-in delay-${i%5} glow-effect`;
+    card.innerHTML = `
+      <div class="relative group cursor-pointer overflow-hidden rounded-xl">
+        <img src="${movie.image}" class="w-full h-48 object-cover rounded-xl transition group-hover:scale-105" alt="${movie.title}">
+        <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center text-yellow-500 text-3xl"><i class="fas fa-play"></i></div>
+      </div>
+      <div class="mt-3 text-white font-medium">${movie.title}</div>
+      <div class="text-gray-400 text-sm">S${movie.season} • E${movie.episode} • ${movie.duration}</div>
+    `;
+
+    card.addEventListener('click', () => {
+      if (isMP4(movie.video)) {
+        openModal(movie);
+      } else {
+        // open player.html with video param (keeps original flow)
+        window.location.href = `player.html?title=${encodeURIComponent(movie.title)}&video=${encodeURIComponent(movie.video)}`;
       }
     });
 
-    // Close video with Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && document.getElementById('videoPlayer').classList.contains('active')) {
-        closeVideo();
-      }
-    });
-  </script>
+    container.appendChild(card);
+  });
+}
+
+/* modal open/close */
+function openModal(m) {
+  modalTitle.textContent = m.title;
+  modalDescription.textContent = m.description;
+  seasonEpisode.textContent = `S${m.season} • E${m.episode}`;
+  episodeDuration.textContent = m.duration;
+  modalVideo.src = m.video;
+  playbackModal.classList.remove('hidden');
+}
+
+closeModal.onclick = () => { playbackModal.classList.add('hidden'); modalVideo.pause(); };
+
+window.addEventListener('DOMContentLoaded', initPage);
+</script>
 </body>
-
 </html>
