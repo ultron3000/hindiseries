@@ -1,173 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avrodh: The Siege Within</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #0f172a, #1e293b);
-      color: white;
-    }
-    .episode-card:hover .play-icon {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-    .modal-enter {
-      animation: modalEnter 0.3s ease-out forwards;
-    }
-    @keyframes modalEnter {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-    .video-header {
-      position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 40%; /* 16:9 aspect ratio */
-      overflow: hidden;
-    }
-    .video-header video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .video-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 20px;
-    }
-    @media (max-width: 768px) {
-      .video-header {
-        padding-bottom: 60%; /* Taller aspect ratio for mobile */
-      }
-    }
-  </style>
+<meta charset="utf-8"/>
+<title>Avrodh: The Siege Within</title>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.1/dist/hls.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #ffcc00;
+  --secondary: #111827;
+  --accent: #f59e0b;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+.movie-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.movie-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.header-glow { text-shadow: 0 0 10px rgba(255, 204, 0, 0.7); }
+
+.movie-poster { aspect-ratio: 2/3; transition: transform 0.5s ease; }
+.movie-card:hover .movie-poster { transform: scale(1.05); }
+
+.modal-overlay {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85); z-index: 1000;
+}
+.modal-card {
+  width: 95%; max-width: 1100px;
+  background: linear-gradient(180deg, rgba(17,24,39,0.9), rgba(17,24,39,0.95));
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,204,0,0.06);
+}
+.modal-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
+}
+.modal-title { font-size: 1.125rem; font-weight:600; color: #ffea8a; }
+.modal-close-btn {
+  width:40px;height:40px;border-radius:999px;background:transparent;
+  border:1px solid rgba(255,255,255,0.04);
+  display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;
+}
+.modal-player {
+  position: relative; padding-bottom: 56.25%; height: 0; background: black;
+}
+.modal-player video,
+.modal-player iframe {
+  position:absolute; top:0; left:0; width:100%; height:100%; background:black;
+}
+</style>
 </head>
-<body>
-  <header class="video-header">
-    <video autoplay muted loop playsinline>
-      <source src="https://imdb-video.media-imdb.com/vi2500509209/1434659607842-pgv4ql-1594623666544.mp4?Expires=1762566174&Signature=pSk~clHjL5VjEhpcKipn5RZQiUXUrgn~r~QKaJbu3jheAL8kDYiyYmdbj9sBZjHm48wkLU4w1IgaXUc8NpgUGu8xdcF39G5BtcgCp-8PZ7IkUAf-EJhDge0Lw6sK~WghEOPG-2xRykOWpZdaqZyPN0GIqZt1baYbCzr9b05bXPTjI5ZBsSYFvY2SzjU9seQFn-d6PZ3SdiMO23gd7hul9BxNtmsiIX7mD1CK9afuPY2mjf2VdybjjEzextMcSZs3PIy~wEdx03VVKPTRYR7~ySECt5n3B~yR0BVdb8Xt4gc0c8hrx4XH7hFvXNfgkDJGyOQ~1KklXww7wgh3P0zojw__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA" type="video/mp4">
-      Your browser does not support HTML5 video.
-    </video>
-    <div class="video-overlay">
-      <h1 class="text-4xl md:text-6xl font-bold mb-4">Avrodh: The Siege Within</h1>
-      <p class="text-xl md:text-2xl max-w-2xl">It is a War Thriller based on the theme of Indian Army and Uri Surgical Strike.</p>
-      <div class="mt-6 flex space-x-4">
-      </div>
-    </div>
-  </header>
 
-  <main class="container mx-auto px-4 py-8">
-    <div class="mb-6">
-      <button onclick="loadSeason(1)" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white mr-2">Season 1</button>
-      <button onclick="loadSeason(2)" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-white">Season 2</button>
-    </div>
-    <div id="episode-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-  </main>
+<body class="relative">
 
-  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-    <div class="bg-gray-800 p-4 rounded-lg w-full max-w-4xl relative modal-enter">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-xl">&times;</button>
-      <video id="modal-video" class="w-full rounded" controls poster="https://i.imgur.com/I9b8D7p.jpg"></video>
-    </div>
+<!-- Floating stars bg -->
+<div class="fixed inset-0 overflow-hidden -z-10">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80"></div>
+  <div class="stars"></div><div class="stars2"></div>
+</div>
+
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+  <div class="relative w-full h-[400px] md:h-[500px] overflow-hidden">
+    <iframe src="https://www.youtube.com/embed/sB87pe73Vj4?autoplay=1&mute=1&loop=1&controls=0&playlist=sB87pe73Vj4"
+      frameborder="0" allow="autoplay; fullscreen"
+      class="absolute top-1/2 left-1/2 w-[177.78vh] h-[100vh] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+    </iframe>
   </div>
 
-  <script>
-    const episodes = {
-      1: [
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERGhWWXlUeOREZo5kanVTTq10dOpXV00kMJBjWqV0dOJjSt5ERrlXTEVUP:1762482274:160.119.251.137:35446110a119ef58ab55e286cabd72ff9ae0b8a6b6ac039999fe4dc472304c6d/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/avrodh_free_14may_episode.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/16bf460e89b804568400e1d0b1be5502/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21ERGxmTEplaPRkUr5ERZFTTt5UbO1WT4planl3TXFVNOpXT1oFRJFTWtlUP:1762482099:95.164.233.88:c7a2f44eaff12064d24ce9dd401233665503a5a57c6db8bdb9ea7bb17238e233/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP2.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21EVWpmTqRmaNJTV61keOlmWUF0dZp2a41keVJjWtpEbZpnWq9ERFBzTUtWP:1762482343:160.119.251.137:078cbb4669b9a657811ead83b00124dacf7567a120b1eb52b215423d30dce64b/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP3.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2lleGpWWtZEbOR0Yy0kaolWTyoVbNdVU080RJFTT6JVbNJTU0o1RVhnWqVVP:1762482392:160.119.251.137:a3d702da97db8a0688c9d5d2afb7365be1062e1aee99f4e574b7059ff9f2ac6a/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP4.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25ERCpmTXFFeOpXS51EVkx2TUt2MZpnVq10RNpnWEZ1aNpWR35EVGxWT6NWP:1762482442:160.119.251.137:04f68806efae93f926d58003d733f13587da5f76dda2f7bed608fc56d68d2b3f/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP5.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2p1VZNTTUdGMPdkUolVbZpXTUxGbPRVV3plaRJTTyU0MZJTW49ERstmWUFVP:1762482491:160.119.251.137:c6152925076d96cb4b9de025f9f3c67c2c7e8eba7213fb8fb7fe15a68dfb0829/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP6.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2llaFl3TXl1MadkUo90VOpmTXlUNORkUrlFVklWWtpEbZpHas5kMFVTTXlVP:1762482540:160.119.251.137:1cb265f12e4d7323e3ac9bab4928b98f24ac5629676b4473993c9d9ecdc8029f/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP7.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaZJjTXlUNZpXT610VJBTWy0kMORlSr50VJp3TUZFaOJTTz0ERSpWTHVVP:1762482585:160.119.251.137:215f253ed571ec7d503fa86810696c48333312f3432de790f5dd7b784edc6691/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP8.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25EVSx2TUpVaaREbq1kaKlmTUhmaapWRx40VFhXWtVVMN1mRp90RGtmWqlVP:1762482631:160.119.251.137:10671a2f173e7300c926aedf7f74b6d90f26f9445aa03abe257b6cd0a747de59/./1080/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_EP9.jpg?h=398&w=708&q=high" },
-      ],
-      2: [
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29EVjNTTqFVeOR1a45EVjBjWtFFMZp3Zw4keFFjWHlUePdVWx0kaVpnTElUP:1762482712:160.119.251.137:31f6ad61ba95f405234ed5a7a870d5faa09cda75edb6e17448afaa6829cc92cb/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AvrodhS2_4_first_episode1_1.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25EVG1WWykUMNpXQz4UbNNTTHVUNNdVS1oFVWtmTqNmeZ1WTw40VWxmWEVVP:1762482760:160.119.251.137:39741ae3b37fe14069fc02c329eff766bcbe13f747458f70b320d49a694ba69b/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_02_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaklmWH1UNORUWy4kaFNTT6pUbNp2ay0UbOtWWykEeapmRq5kaNpnTElUP:1762482803:160.119.251.137:55a41a071702740aeecac6a15f35a3d4167f305e069bb0bde921c128e3f8372d/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_03_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT25UbFdXTqV0MO1WTzo1VWpWWUVlMZdVU00UbRpXW6h2aNREbop1RKt2TXlUP:1762482850:160.119.251.137:2b3efa7485730ddd2be86ca5cf0fcfb73ee83b6741a378105aa0197a76533da0/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_04_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaNNzTE1keaRlTp1UbVNTTXZ0aORFZs1keFBjTqxGaOJjWtpFVNVzTEdWP:1762482897:160.119.251.137:70bf16c41b6c285a7fcc60f64c1d5db52495d3712f0b8fcf657e93d0aceb4623/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_05_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT29ERCt2TU1EeapGZqplaNVTTE1UNNpXU0kVbFJTTEVkePdVW35UbVFjT6tWP:1762482954:160.119.251.137:67acb718079bf9df306195c0bc24c1261d47ee551c53fcb7eb6590fe4b81c12e/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_06_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2pFVahWTUVFeadlRt9ERrBjTqJ0aZpXT1kFVZl3TUtmMORlTq90RZNjWE1UP:1762483003:160.119.251.137:a88ef1a17f299ac6fa1641d5b7d3e491bc1cdfe72aee5ee3fbcfedbedd2640bf/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_07_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://cdn30091.sunny387vks.com:443/stream2/i-arch-400/124de233b0783ac68aa5e25dcbcc16b0/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2pFVJdnTql0dOpWQ0o1RVJjTUlFNNpWW0oFRjlXWUFEeNp3Z45kanNjWtVVP:1762483048:160.119.251.137:9acc4647fcb16966908a0894994bd533ba751daaebbe3e347d36fe08097e12e3/./720/index.m3u8", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_08_landscape_thumb.jpg?h=398&w=708&q=high" },
-        { url: "https://sxic.swobodafocht.sbs:443/v4/9a/5gupa/index-f1-v1-a1.txt", poster: "https://images.slivcdn.com/landscape_thumb/AVRODH_S2_EP_09_landscape_thumb.jpg?h=398&w=708&q=high" },
-      ]
-    };
+  <img src="https://images.filmibeat.com/img/2020/07/avrodh1-1596025891.jpg"
+    alt="HAQ Logo" class="absolute top-4 left-4 h-16 md:h-24 animate-logo z-10"/>
+</div>
 
-    function isStreamLink(url) {
-      return url.endsWith('.m3u8') || url.endsWith('.txt');
+<style>
+.animate-logo { animation: float-pulse 3s ease-in-out infinite, glow-logo 2s ease-in-out infinite alternate; }
+@keyframes float-pulse { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes glow-logo {
+  0%{filter:drop-shadow(0 0 2px #fffa65) drop-shadow(0 0 4px #ffba00);}
+  50%{filter:drop-shadow(0 0 6px #fffa65) drop-shadow(0 0 12px #ffba00);}
+  100%{filter:drop-shadow(0 0 2px #fffa65) drop-shadow(0 0 4px #ffba00);}
+}
+@media (max-width:768px){.animate-logo{height:4rem;top:1rem;left:1rem;}}
+</style>
+
+<!-- Movies Grid -->
+<div class="mb-12 mt-8">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6" id="movies"></div>
+</div>
+
+<footer class="py-6 border-t border-gray-800 text-center text-gray-400">
+  <p>© Avrodh Universe</p>
+</footer>
+
+<!-- Modal -->
+<div id="video-modal" class="modal-overlay hidden">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <div id="modal-title" class="modal-title"></div>
+      <button id="close-video-modal" class="modal-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-player">
+      <video id="modal-video" class="w-full h-full" controls playsinline></video>
+    </div>
+  </div>
+</div>
+
+<script>
+const movies = [
+  { title: "Season 1", video: "https://streamtape.com/e/6QPbgm91wJC9zP8/", image: "https://cdn.moviefone.com/image-assets/106581/t4fMUfvXYdkUBNNvHoU1tbOkicl.jpg?d=360x540&q=60", category: "other", year: 2020 },
+  { title: "Season 2", video: "https://fastop3.vkcdn5.com/olaxltqethuiolyobgl2dxb6nt727x4kllnmvmdtzfjkcqw2t3olrpkbwmsa/", image: "https://xstreamcp-assets-msp.streamready.in/assets/SONYLIV_VOD/SERIES/6485bdd982488153bfe3eeeb/images/avrodh_3june_portrait_thumb.jpg", category: "other", year: 2022 },
+     ];
+
+const container = document.getElementById('movies');
+const videoModal = document.getElementById('video-modal');
+const modalTitle = document.getElementById('modal-title');
+let currentHls = null;
+
+function showModal(){ videoModal.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function hideModal(){ videoModal.classList.add('hidden'); document.body.style.overflow=''; }
+
+function isHls(u){return u.includes('.m3u8')||u.includes('index-')||/index.*\.txt/i.test(u);}
+function isMP4(u){return /\.mp4($|\?)/i.test(u);}
+function isYouTube(u){return u.includes('youtu');}
+
+function playInModal(title, url) {
+  if (currentHls) {
+    try { currentHls.destroy(); } catch (e) {}
+    currentHls = null;
+  }
+  const playerContainer = document.querySelector('.modal-player');
+  const modalVideo = document.getElementById('modal-video');
+  modalTitle.textContent = title || '';
+
+  // Streamtape
+  if (url.includes('streamtape.com')) {
+    playerContainer.innerHTML = `<iframe src="${url}" width="100%" height="100%" allowfullscreen allowtransparency allow="autoplay" scrolling="no" frameborder="0"></iframe>`;
+    showModal();
+    return;
+  }
+
+  // YouTube
+  if (isYouTube(url)) {
+    playerContainer.innerHTML = `
+      <iframe src="${url}?autoplay=1&modestbranding=1&rel=0"
+              width="100%" height="100%"
+              allowfullscreen
+              allow="autoplay; encrypted-media"
+              frameborder="0"></iframe>`;
+    showModal();
+    return;
+  }
+
+  // HLS
+  if (isHls(url)) {
+    if (Hls.isSupported()) {
+      currentHls = new Hls();
+      currentHls.loadSource(url);
+      currentHls.attachMedia(modalVideo);
+      currentHls.on(Hls.Events.MANIFEST_PARSED, () => { showModal(); modalVideo.play().catch(() => {}); });
+    } else {
+      modalVideo.src = url;
+      showModal();
+      modalVideo.play().catch(() => {});
     }
+    return;
+  }
 
-    function loadSeason(season) {
-      const grid = document.getElementById('episode-grid');
-      grid.innerHTML = '';
-      episodes[season].forEach((ep, i) => {
-        const card = document.createElement('div');
-        card.className = 'episode-card bg-gray-700 p-4 rounded shadow hover:shadow-lg transition duration-300 hover:transform hover:scale-105';
-        card.innerHTML = `
-          <img src="${ep.poster}" class="rounded mb-2 w-full h-48 object-cover" alt="Episode ${i + 1}">
-          <h2 class="text-xl font-semibold mb-2">Episode ${i + 1}</h2>
-          <button class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded w-full flex items-center justify-center">
-            <i class="fas fa-play mr-2"></i> Play
+  // MP4
+  if (isMP4(url)) {
+    modalVideo.src = url;
+    showModal();
+    modalVideo.play().catch(() => {});
+    return;
+  }
+
+  // Redirect to player.html for other formats
+  window.location.href = `player.html?title=${encodeURIComponent(title)}&video=${encodeURIComponent(url)}`;
+}
+
+function closePlayer(){
+  if(currentHls){try{currentHls.destroy();}catch(e){}currentHls=null;}
+  const playerContainer=document.querySelector('.modal-player');
+  playerContainer.innerHTML=`<video id="modal-video" class="w-full h-full" controls playsinline></video>`;
+  hideModal();
+}
+
+document.getElementById('close-video-modal').addEventListener('click',closePlayer);
+videoModal.addEventListener('click',e=>{if(e.target===videoModal)closePlayer();});
+
+function renderMovies(list){
+  container.innerHTML='';
+  list.forEach((movie,i)=>{
+    const div=document.createElement('div');
+    div.className=`movie-card animate-fade-in rounded-xl overflow-hidden bg-gray-800 hover:bg-gray-700 cursor-pointer relative group`;
+    div.innerHTML=`
+      <div class="relative overflow-hidden rounded-t-lg">
+        <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover movie-poster">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <button class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-full transition transform hover:scale-105">
+            <i class="fas fa-play mr-2"></i> Watch Now
           </button>
-        `;
-        card.querySelector('button').onclick = () => {
-          if (isStreamLink(ep.url)) {
-            window.location.href = `player.html?video=${encodeURIComponent(ep.url)}`;
-          } else {
-            const video = document.getElementById('modal-video');
-            video.src = ep.url;
-            video.poster = ep.poster;
-            document.getElementById('modal').classList.remove('hidden');
-          }
-        };
-        grid.appendChild(card);
-      });
-    }
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="font-semibold text-lg truncate">${movie.title}</h3>
+        <div class="flex justify-between items-center mt-2 text-sm text-gray-400"><span>${movie.year||''}</span></div>
+      </div>`;
+    div.addEventListener('click',()=>playInModal(movie.title,movie.video));
+    container.appendChild(div);
+  });
+}
+renderMovies(movies);
+</script>
 
-    function closeModal() {
-      const video = document.getElementById('modal-video');
-      video.pause();
-      video.src = '';
-      document.getElementById('modal').classList.add('hidden');
-    }
-
-    // Auto-play the header video on mobile devices
-    document.addEventListener('DOMContentLoaded', function() {
-      const headerVideo = document.querySelector('.video-header video');
-      if (headerVideo) {
-        headerVideo.play().catch(e => {
-          console.log("Autoplay prevented, showing fallback");
-        });
-      }
-      loadSeason(1);
-    });
-  </script>
+<canvas id="sparkCanvasPage"></canvas>
+<style>
+#sparkCanvasPage{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10000;}
+</style>
+<script>
+const canvas=document.getElementById('sparkCanvasPage');const ctx=canvas.getContext('2d');const sparks=[];
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}window.addEventListener('resize',resizeCanvas);resizeCanvas();
+const easing=t=>t*(2-t);const dur=300,count=6,size=8,radius=12,color='#00f2ff';
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);const now=performance.now();
+for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];const el=now-s.t;if(el>=dur){sparks.splice(i,1);continue;}
+const p=el/dur;const e=easing(p);const d=e*radius;const l=size*(1-e);const x1=s.x+d*Math.cos(s.a),y1=s.y+d*Math.sin(s.a);
+const x2=s.x+(d+l)*Math.cos(s.a),y2=s.y+(d+l)*Math.sin(s.a);ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+requestAnimationFrame(draw);}requestAnimationFrame(draw);
+document.addEventListener('click',e=>{for(let i=0;i<count;i++){sparks.push({x:e.clientX,y:e.clientY,a:(2*Math.PI*i)/count,t:performance.now()});}});
+</script>
 </body>
 </html>
